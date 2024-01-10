@@ -87,7 +87,7 @@ class ProductosCreateSerializer(serializers.ModelSerializer):
                 invima = ' INV:'+datos['invima']
             if datos['cum'] != "" and datos['cum'] is not None :
                 cum = ' CUM:'+datos['cum']
-            self.instance.nombreymarcaunico = datos['nombre']+' '+datos['unidad']+invima+cum+' ('+datos['laboratorio']+')'
+            self.instance.nombreymarcaunico = datos['nombre']+' '+datos['unidad']+invima+   +' ('+datos['laboratorio']+')'
 
     
             instance = super().save(**kwargs)

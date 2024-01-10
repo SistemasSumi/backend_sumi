@@ -897,6 +897,10 @@ class NuevaCotizacion(models.Model):
         return queryset
     
     
+
+        
+    
+    
        
 
 class NuevaCotizacionDetalle(models.Model):

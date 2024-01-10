@@ -52,8 +52,8 @@ def Facturacion(request):
     if request.method == "POST":
         cxc = request.data['cxc']
         detalle = request.data['detalle']
-
         v = saveDocVenta(True,cxc,detalle,request.user)
+        print('respuesta al metodo post:',v)
         return Response(v)
     
 
@@ -96,6 +96,20 @@ def InvoceReport(request):
             id = request.GET.get('id')
             cxc = getInvoce(id)
             return Response(InvoceSerializer(cxc).data)
+        
+
+@csrf_exempt
+@api_view(('GET',))
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+def CotizacionReport(request):
+    if request.method == "GET":
+        if request.GET.get('id'):
+            id = request.GET.get('id')
+            cot = getCotizacion(id)
+            print(cot)
+            return Response(CotizacionSerializer(cot).data)
+
 
 
 
@@ -104,8 +118,6 @@ def InvoceReport(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def  proformaAFactura(request):
-
-
     if request.method == "POST":
         data = request.data
         factura = saveProformasAFactura(data,request.user)

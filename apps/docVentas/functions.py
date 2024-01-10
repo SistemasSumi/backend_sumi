@@ -57,10 +57,21 @@ def getInvoce(id):
         ).prefetch_related('detalle_factura','impuesto_cxc','retencion_cxc').get(id = id)
     return cxc
 
+def getCotizacion(id):
+    cot = NuevaCotizacion.objects.select_related(
+        'numeracion',
+        'cliente',
+        'formaPago',
+        'vendedor',
+        'usuario',
+        ).prefetch_related('factura_cotizacion').get(id = id)
+    return cot
+
 
 
 def saveDocCotizacion(create,docVenta,detalle,usuario):
     newVenta = NuevaCotizacion()
+    print(detalle)
     if create:
         # SE HACE EL LLAMADO A LA TABLA NUMERACION, PARA LA RELACIÓN CON LA VENTA
         num       = numeracion.objects.get(id = docVenta['numeracion'])

@@ -19,7 +19,7 @@ DATABASES = {
        	'ENGINE': 'django.db.backends.postgresql_psycopg2',
  		'NAME' : 'farmacia',
  		'USER' : 'postgres',
- 		'PASSWORD' : '1236',
+ 		'PASSWORD' : '300203',
  		'HOST' : 'localhost', #si tienes otra dirección host debes remplazar esta
  		'PORT' : '5432', #si lo dejas vacío tomara el puerto por default
      },
@@ -71,12 +71,12 @@ DATABASES = {
 
 
 
-STATIC_URL = '/static/'
+STATIC_URL = '/statics/'    
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'statics'),
 ]
 
 

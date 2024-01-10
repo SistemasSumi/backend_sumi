@@ -9,10 +9,8 @@ urlpatterns = [
     path('setfacturas1/', setFacturasActual, name="fac"),
     path('setNotas/', setnotasActual, name="fac"),
     path('setIngresos/', setIngresosFarmac, name="fac"),
-
-
-
     path('cotizaciones/', Cotizacion, name="fac"),
+    path('cotizaciones/report/', CotizacionReport, name="fac"),
     path('facturas/', Facturacion, name="fac"),
     path('facturas/busqueda/', busquedaAvanzadaFacturas, name="fac"),
     path('facturas/productos/eliminar/', EliminarProducto, name="fac"),
