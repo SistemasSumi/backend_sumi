@@ -71,6 +71,7 @@ def Cotizacion(request):
     if request.method == "POST":
         cxc = request.data['cxc']
         detalle = request.data['detalle']
+        
 
         v = saveDocCotizacion(True,cxc,detalle,request.user)
         return Response(v)
@@ -188,6 +189,18 @@ def EliminarProducto(request):
         id = request.data['id']
         eliminarProducto(id)
         return Response({'data':'ok'})
+    
+@csrf_exempt
+@api_view(( 'POST',))
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def EliminarProductoCotizacion(request):
+    if request.method == "POST":
+        id = request.data['id']
+        retencionCotizacion = request.data['retencionCotizacion']
+        eliminarProductoCotizacion(id,retencionCotizacion)
+        return Response({'data':'ok'})
+    
 
 @csrf_exempt
 @api_view(( 'POST',))
@@ -198,6 +211,18 @@ def AgregarProducto(request):
         id      = request.data['factura']
         detalle = request.data['detalle']
         agregarProducto(id,detalle)
+        return Response({'data':'ok'})
+    
+@csrf_exempt
+@api_view(( 'POST',))
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def AgregarProductoCotizacion(request):
+    if request.method == "POST":
+        id      = request.data['factura']
+        detalle = request.data['detalle']
+        retencionCotizacion = request.data['retencionCotizacion']
+        agregarProductoCotizacion(id,detalle,retencionCotizacion)
         return Response({'data':'ok'})
     
 

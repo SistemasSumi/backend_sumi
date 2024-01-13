@@ -890,11 +890,11 @@ class NuevaCotizacion(models.Model):
 
       
         if inicial:
-            return queryset
+            return queryset.order_by('-id')
 
 
-        print(obj)
-        return queryset
+        
+        return queryset.order_by('-id')
     
     
 

@@ -206,6 +206,7 @@ class CotizacionSerializer(serializers.ModelSerializer):
         v['nombre']= instance.vendedor.nombre
         response['usuario'] = instance.usuario.username
         response['vendedor'] = v
+        print(response)
         return response
     
 

@@ -315,6 +315,7 @@ class NumeracionSerializer(serializers.ModelSerializer):
         if  (   instance.tipoDocumento == '5' or 
                 instance.tipoDocumento == '6' or 
                 instance.tipoDocumento == '17' or
+                instance.tipoDocumento == '7' or
                 instance.tipoDocumento == '19' 
             ) :
             response['numero'] = str(instance.proximaFactura).rjust(4,'0')+'-'+str(instance.prefijo)
