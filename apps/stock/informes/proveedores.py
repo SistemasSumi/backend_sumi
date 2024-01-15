@@ -1,5 +1,7 @@
 from django.db.models import F, Sum, Case, When, Q,Value ,ExpressionWrapper,CharField, FloatField,Func,DateTimeField,IntegerField
 from django.utils.timezone import now
+from django.db import connection
+from django.http import JsonResponse
 from django.utils import timezone
 from datetime import timedelta
 from django.db import models
@@ -7,6 +9,8 @@ from datetime import date
 from datetime import datetime
 from apps.stock.models import CxPCompras
 from apps.configuracion.models import RetencionesEnGeneral
+from apps.configuracion.models import RetencionesProveedor
+from apps.configuracion.models import Retenciones
 from apps.configuracion.models import Terceros
 from rest_framework import serializers 
 import json
@@ -113,6 +117,61 @@ def estado_cartera_proveedor(proveedor_id,fecha_corte):
     data['totales_por_rango'] = totales_por_rango
 
     return data
+
+def certificado_retencion_proveedor( proveedor_id, fecha_inicio, fecha_fin):
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT
+                t."nombreComercial",
+                t.documento,
+                SUM(cxp."reteFuente") AS valor_retenido,
+                SUM(cxp."base") AS base,
+                r."nombre" AS tipo_retencion,
+                r."porcentaje" AS porcentaje_retencion
+            FROM
+                public.cxpcompras cxp
+            INNER JOIN
+                public.terceros t ON t.id = cxp.proveedor_id
+            LEFT JOIN
+                public.retenciones_proveedor rp ON t.id = rp.tercero_id
+            LEFT JOIN
+                public.retenciones r ON rp.retencion_id = r.id
+            WHERE
+                cxp.fecha BETWEEN %s AND %s AND cxp."reteFuente" > 0
+                AND cxp.proveedor_id = %s
+            GROUP BY
+                cxp.proveedor_id, t."nombreComercial", r."nombre", r."porcentaje",t.documento
+        """, [fecha_inicio, fecha_fin, proveedor_id])
+        columns = [desc[0] for desc in cursor.description]
+
+        # Obtener los resultados como un diccionario
+        results = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+        # results = cursor.fetchall()
+
+    return results
+    # resultados = (
+    #     CxPCompras.objects
+    #     .filter(
+    #         proveedor_id=proveedor_id,
+    #         fecha__range=(fecha_inicio, fecha_fin),
+    #         reteFuente__gt=0
+    #     )
+    #     .values(
+    #         'proveedor__nombreComercial',
+    #         'proveedor_id',
+    #         'retenciones__nombre',
+    #         'retenciones__porcentaje'
+    #     )
+    #     .annotate(
+    #         valor_retenido=Sum('reteFuente'),
+    #         base=Sum('base'),
+    #         tipo_retencion=F('retenciones__nombre'),
+    #         porcentaje_retencion=F('retenciones__porcentaje')
+    #     )
+    # )
+
+    # return resultados
 
 
 

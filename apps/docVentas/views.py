@@ -197,8 +197,8 @@ def EliminarProducto(request):
 def EliminarProductoCotizacion(request):
     if request.method == "POST":
         id = request.data['id']
-        retencionCotizacion = request.data['retencionCotizacion']
-        eliminarProductoCotizacion(id,retencionCotizacion)
+        retencionCliente = request.data['retencionCliente']
+        eliminarProductoCotizacion(id,retencionCliente)
         return Response({'data':'ok'})
     
 
@@ -221,8 +221,8 @@ def AgregarProductoCotizacion(request):
     if request.method == "POST":
         id      = request.data['factura']
         detalle = request.data['detalle']
-        retencionCotizacion = request.data['retencionCotizacion']
-        agregarProductoCotizacion(id,detalle,retencionCotizacion)
+        retencionCliente = request.data['retencionCliente']
+        agregarProductoCotizacion(id,detalle,retencionCliente)
         return Response({'data':'ok'})
     
 

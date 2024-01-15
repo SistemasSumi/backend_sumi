@@ -47,6 +47,7 @@ urlpatterns = [
 
     path('informes/compras/retenciones/', IF_RETENCION_COMPRAS, name="unidades"),
     path('informes/proveedores/estadoCartera/', IF_ESTADO_CARTERA_PROVEEDOR, name="unidades"),
+    path('informes/proveedores/certificadoRetencion/', CERTIFICADO_RETENCION_PROVEEDOR, name="unidades"),
     path('informes/proveedores/cxp/', IF_CXP_COMPRAS, name="unidades"),
     path('informes/inventario/general/', IF_INVENTARIO_GENERAL, name="unidades"),
     path('informes/inventario/vencido/', IF_INVENTARIO_VENCIDO, name="unidades"),

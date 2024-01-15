@@ -503,8 +503,8 @@ def eliminarProducto(id):
             mensaje_error = f"No se encontró el producto {facturaDetalleObject.producto.codigoDeBarra} con lote {facturaDetalleObject.lote} en el inventario actual"
             raise serializers.ValidationError(mensaje_error)
 
-def eliminarProductoCotizacion(id,retencionCotizacion):
-    print(retencionCotizacion,'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
+def eliminarProductoCotizacion(id,retencionCliente):
+    
     
     with transaction.atomic():
         
@@ -521,15 +521,23 @@ def eliminarProductoCotizacion(id,retencionCotizacion):
 
         if cot.valorIva > 0:
             cot.valorIva -= iva
-           
+            
         if cot.valorReteFuente > 0:
-            for x in retencionCotizacion:
+            for x in retencionCliente:
                 base    = (subtotal-descuento)
                 importe = base * x['retencion']['porcentaje'] / 100
-                # x.base  -= base
-                # x.total -= importe
                 cot.valorReteFuente -= importe
                 cot.valor           += importe
+                 
+           
+        # if cot.valorReteFuente > 0:
+        #     for x in retencionCotizacion:
+        #         base    = (subtotal-descuento)
+        #         importe = base * x['retencion']['porcentaje'] / 100
+        #         # x.base  -= base
+        #         # x.total -= importe
+        #         cot.valorReteFuente -= importe
+        #         cot.valor           += importe
                 
             
                 # print(x['retencion']['porcentaje'],'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
@@ -746,8 +754,8 @@ def agregarProducto(idfactura,detalle):
 
                 contabilizarFacturas(cxc,cxcDetalle)
                 
-def agregarProductoCotizacion(idfactura,detalle,retencionCotizacion):
-    print(retencionCotizacion,'22222222222222222222222222222222222222222')
+def agregarProductoCotizacion(idfactura,detalle,retencionCliente):
+    print(retencionCliente,'22222222222222222222222222222222222222222')
     with transaction.atomic():
         
         cxc = NuevaCotizacion.objects.get(id = idfactura)
@@ -782,25 +790,55 @@ def agregarProductoCotizacion(idfactura,detalle,retencionCotizacion):
 
 
         d = facturaDetalleObject
-        
-
+    
         cxc.subtotal  += d.subtotal
         cxc.valorIva  += d.iva * d.cantidad
         cxc.descuento += d.descuento * d.cantidad
         cxc.valor     += d.total
+        
+        if cxc.valorReteFuente >0:
+            for x in retencionCliente:
+                base = (d.subtotal-d.descuento)
+                importe = base * x['retencion']['porcentaje'] / 100
+                cxc.valorReteFuente += importe
+                cxc.valor -= importe
+        else:
+            for r in retencionCliente:
+                
+                if r['fija']:
+        
+                    base       = cxc.subtotal - cxc.descuento
+                    procentaje = r['retencion']['porcentaje']
+                    total      = base * procentaje / 100
+                    
+
+                    cxc.valorReteFuente += total
+                    cxc.valor -= total
+                else:
+                    if r['retencion']['base'] > 0 and (cxc.subtotal - cxc.descuento) >= r['retencion']['base']:
+                        # SE ASIGNARAN SUS DATOS CORRESPONDIENTES
+                         
+                        base       = cxc.subtotal - cxc.descuento
+                        procentaje = r['retencion']['porcentaje']
+                        total      = base * procentaje / 100
+                    
+
+                        cxc.valorReteFuente += total
+                        cxc.valor -= total
+            
     
 
-        if retencionCotizacion:
+        # if retencionCotizacion:
             
-            for x in retencionCotizacion:
-                base     = (d.subtotal-d.descuento)
-                importe  = base * x['retencion']['porcentaje'] / 100
+        #     for x in retencionCotizacion:
+        #         base     = (d.subtotal-d.descuento)
+        #         importe  = base * x['retencion']['porcentaje'] / 100
                 
-                cxc.valorReteFuente += importe
-                cxc.valor           -= importe   
-        else:
-            cxc.valorReteFuente += 0
-            cxc.valor -= 0
+        #         cxc.valorReteFuente += importe
+        #         cxc.valor           -= importe   
+        # else:
+        #     cxc.valorReteFuente += 0
+        #     cxc.valor -= 0
                 
         
         cxc.save()
