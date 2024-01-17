@@ -51,7 +51,34 @@ class FacturasSerializer(serializers.ModelSerializer):
         response = super().to_representation(instance)
         response['usuario'] = instance.usuario.username
         return response
+class CotizacionesSerializer(serializers.ModelSerializer):
     
+    formaPago = FormaPagoCreateSerializer()
+    cliente   = TercerosCreateSerializer()
+
+    class Meta:
+        model  = NuevaCotizacion
+        fields = ('__all__')
+
+    def to_representation(self, instance):
+        
+        response = super().to_representation(instance)
+        response['usuario'] = instance.usuario.username
+        return response
+    
+class DetalleCotizacionSerializer(serializers.ModelSerializer):
+    
+    producto  =   ProductosSerializer()
+
+
+    class Meta:
+        model  = NuevaCotizacionDetalle
+        fields = ('__all__')
+
+    def to_representation(self, instance):
+        
+        response = super().to_representation(instance)
+        return response
 
 class DetalleFacturasSerializer(serializers.ModelSerializer):
     
@@ -158,6 +185,28 @@ class InvoceSerializer(serializers.ModelSerializer):
         v['nombre']= instance.vendedor.nombre
         response['usuario'] = instance.usuario.username
         response['vendedor'] = v
+        return response
+    
+class CotizacionSerializer(serializers.ModelSerializer):
+    numeracion  = NumeracionSerializer()
+    formaPago   = FormaPagoCreateSerializer()
+    cliente     = TercerosCreateSerializer()
+    productos   = DetalleCotizacionSerializer(source  = "factura_cotizacion", many = True)
+    # retenciones = RetencionCxcMoviSerializer(source = "retencion_cxc", many = True)
+    # impuestos   = ImpuestosCxcMoviSerializer(source = "impuesto_cxc", many = True)
+
+    class Meta:
+        model  = NuevaCotizacion
+        fields = ('__all__')
+
+    def to_representation(self, instance):
+        v = dict()
+        response = super().to_representation(instance)
+        v['id']= instance.vendedor.id
+        v['nombre']= instance.vendedor.nombre
+        response['usuario'] = instance.usuario.username
+        response['vendedor'] = v
+        print(response)
         return response
     
 

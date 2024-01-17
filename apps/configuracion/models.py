@@ -501,6 +501,7 @@ class Retenciones(models.Model):
     RETEFUENTE = '06'
     ICA = '07'
 
+
     """Model definition for Impuestos."""
     TIPORETENCION_CHOICES = (
         (RETEFUENTE, 'Retención en la fuente'),

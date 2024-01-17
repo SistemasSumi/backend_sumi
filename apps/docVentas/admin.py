@@ -163,10 +163,10 @@ class RetencionCxcDetalleAdmin(admin.ModelAdmin):
     ordering = ('id',)
 
 class DetalleCotizacionInformalInline(admin.TabularInline):
-    model = DetalleCotizacionInformal
+    model = NuevaCotizacionDetalle
     extra = 1  # Puedes ajustar la cantidad de formularios en línea que se muestran
 
-@admin.register(CotizacionInformal)
+@admin.register(NuevaCotizacion)
 class CotizacionInformalAdmin(admin.ModelAdmin):
     list_display = ('numero', 'cliente', 'fecha', 'valor', 'usuario')
     list_filter = ('fecha', 'usuario')

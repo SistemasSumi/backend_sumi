@@ -429,6 +429,9 @@ def obtenerNumeracion(tipo):
     elif tipo == 'ingreso':
         num = numeracion.objects.filter(tipoDocumento = num.INGRESO_ALMACEN, estado = True)
         return num
+    elif tipo == 'cotizacion':
+        num = numeracion.objects.filter(tipoDocumento = num.COTIZACION, estado = True)
+        return num
     elif tipo == 'notaCreditoCompras':
         num = numeracion.objects.filter(tipoDocumento = num.NOTA_CREDITO_COMPRAS, estado = True)
         return num

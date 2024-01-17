@@ -261,9 +261,11 @@ class ComprobantesContable(models.Model):
 
     @classmethod
     def filter_comprobantes(cls, obj):
-  
+        
         queryset = cls.objects.select_related('numeracion','usuario').all()
         inicial = True
+        
+        
 
         if 'numero' in obj and obj['numero'] is not None:
             queryset = queryset.filter(numero=obj['numero'])
@@ -276,6 +278,15 @@ class ComprobantesContable(models.Model):
         if 'year' in obj and obj['year'] is not None:
             queryset = queryset.filter(fechaRegistro__year=obj['year'])
             inicial = False
+        # if 'year' in obj and obj['year'] is not None:
+        #     queryset = queryset.filter(fechaRegistro__year=obj['year'])
+        #     inicial = False
+        # else:
+        # # Establecer un valor predeterminado (por ejemplo, el año actual)
+        #     current_year = datetime.now().year
+        #     queryset = queryset.filter(fechaRegistro__year__lte=current_year)
+        #     inicial = False
+        
 
         if 'mes' in obj and obj['mes'] is not None:
             queryset = queryset.filter(fechaRegistro__month=obj['mes'])
@@ -290,6 +301,8 @@ class ComprobantesContable(models.Model):
 
                 fecha_inicial = fecha_inicial.strftime("%Y-%m-%d") 
                 fecha_final   = fecha_final.strftime("%Y-%m-%d")
+                
+               
 
 
                 if fecha_inicial and fecha_final:
@@ -321,11 +334,18 @@ class ComprobantesContable(models.Model):
         if 'concepto' in obj and obj['concepto'] is not None:
             queryset = queryset.filter(comprobante_detalle__concepto__icontains=obj['concepto']).distinct()
             inicial = False
+            
+        # print("Fechas de registro despues de aplicar los filtros:")
+        # for comprobante in queryset:
+        #     print(f"Comprobante {comprobante.id}: {comprobante.fechaRegistro}")
+        for comprobante in queryset:
+            print(f"Comprobante {comprobante.id}: Consecutivo - {comprobante.consecutivo}, Fecha - {comprobante.fechaRegistro}")
+            
 
         if inicial:
-            return queryset.order_by('-consecutivo', '-fechaRegistro')[:20]
+            return queryset.order_by('-id', '-fechaRegistro')[:20]
 
-        return queryset.order_by('-consecutivo', '-fechaRegistro')
+        return queryset.order_by('-id', '-fechaRegistro')
 
 
     def __str__(self):

@@ -52,14 +52,38 @@ def Facturacion(request):
     if request.method == "POST":
         cxc = request.data['cxc']
         detalle = request.data['detalle']
-
         v = saveDocVenta(True,cxc,detalle,request.user)
+        print('respuesta al metodo post:',v)
         return Response(v)
     
 
     if request.method == "PUT":
         cxc = request.data['cxc']
         v = saveDocVenta(False,cxc,None,request.user)
+        return Response(v)
+
+@csrf_exempt
+@api_view(('GET', 'POST','PUT'))
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def Cotizacion(request):
+            
+    if request.method == "POST":
+        cxc = request.data['cxc']
+        detalle = request.data['detalle']
+        
+
+        v = saveDocCotizacion(True,cxc,detalle,request.user)
+        return Response(v)
+    
+    if request.method == "GET":
+        cotizaciones = listadoCotizaciones()
+        return Response(CotizacionesSerializer(cotizaciones, many = True).data)
+    
+
+    if request.method == "PUT":
+        cxc = request.data['cxc']
+        v = saveDocCotizacion(False,cxc,None,request.user)
         return Response(v)
 
 
@@ -73,6 +97,20 @@ def InvoceReport(request):
             id = request.GET.get('id')
             cxc = getInvoce(id)
             return Response(InvoceSerializer(cxc).data)
+        
+
+@csrf_exempt
+@api_view(('GET',))
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+def CotizacionReport(request):
+    if request.method == "GET":
+        if request.GET.get('id'):
+            id = request.GET.get('id')
+            cot = getCotizacion(id)
+            print(cot)
+            return Response(CotizacionSerializer(cot).data)
+
 
 
 
@@ -81,8 +119,6 @@ def InvoceReport(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def  proformaAFactura(request):
-
-
     if request.method == "POST":
         data = request.data
         factura = saveProformasAFactura(data,request.user)
@@ -153,6 +189,18 @@ def EliminarProducto(request):
         id = request.data['id']
         eliminarProducto(id)
         return Response({'data':'ok'})
+    
+@csrf_exempt
+@api_view(( 'POST',))
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def EliminarProductoCotizacion(request):
+    if request.method == "POST":
+        id = request.data['id']
+        retencionCliente = request.data['retencionCliente']
+        eliminarProductoCotizacion(id,retencionCliente)
+        return Response({'data':'ok'})
+    
 
 @csrf_exempt
 @api_view(( 'POST',))
@@ -163,6 +211,18 @@ def AgregarProducto(request):
         id      = request.data['factura']
         detalle = request.data['detalle']
         agregarProducto(id,detalle)
+        return Response({'data':'ok'})
+    
+@csrf_exempt
+@api_view(( 'POST',))
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def AgregarProductoCotizacion(request):
+    if request.method == "POST":
+        id      = request.data['factura']
+        detalle = request.data['detalle']
+        retencionCliente = request.data['retencionCliente']
+        agregarProductoCotizacion(id,detalle,retencionCliente)
         return Response({'data':'ok'})
     
 

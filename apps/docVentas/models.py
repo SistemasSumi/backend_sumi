@@ -83,7 +83,7 @@ class CxcMovi(models.Model):
     def filter_by_criterio_ventas(cls, obj):
         
         inicial = True
-        
+
 
         queryset = cls.objects.filter(~Q(numeracion__tipoDocumento=numeracion.PROFORMA)).select_related(
             'numeracion',
@@ -96,6 +96,8 @@ class CxcMovi(models.Model):
         if 'prefijo' in obj and obj['prefijo'] is not None and obj['prefijo'].strip()  != '' :
             queryset = queryset.filter(prefijo__iexact=obj['prefijo'])
             inicial = False
+        
+
 
         if 'numero' in obj and obj['numero'] is not None:
             queryset = queryset.filter(consecutivo=int(obj['numero']))
@@ -707,8 +709,69 @@ class DetailPaymentInvoiceVentas(models.Model):
         
 
 
-class CotizacionInformal(models.Model):
-    """Model definition for CxcMovi."""
+# class CotizacionInformal(models.Model):
+#     """Model definition for CxcMovi."""
+
+
+#     # TODO: Define fields here
+#     id                 = models.AutoField(primary_key = True)
+#     numeracion         = models.ForeignKey(to="configuracion.numeracion", related_name="numeracion_cotizacion", on_delete=models.PROTECT)
+#     consecutivo        = models.IntegerField()
+#     numero             = models.CharField('numero', max_length=50, unique=True)
+#     prefijo            = models.CharField('prefijo', max_length=50)
+#     cliente            = models.CharField('cliente', max_length=250)
+#     fecha              = models.DateField('Fecha', auto_now=False, auto_now_add=True)
+#     hora               = models.TimeField('Hora', auto_now=True, auto_now_add=False)
+#     valor              = models.FloatField()
+#     descuento          = models.FloatField(default = 0)
+#     valorLetras        = models.CharField('Valor en letras', max_length=250)
+#     observacion        = models.CharField('Observacion', max_length=350,blank=True, null=True)
+#     formaPago          = models.CharField('formaPago', max_length=100)
+#     usuario            = models.ForeignKey("users.User",models.PROTECT)
+#     valorIva           = models.FloatField(default = 0)
+#     valorReteFuente    = models.FloatField(default = 0)
+#     subtotal           = models.FloatField(default = 0)
+
+#     class Meta:
+#         """Meta definition for CotizacionInformal."""
+
+#         verbose_name = 'CotizacionInformal'
+#         verbose_name_plural = 'CotizacionInformal'
+        
+
+#     def __str__(self): 
+#         return f'{self.numero}'
+    
+  
+
+# class DetalleCotizacionInformal(models.Model):
+#     """Model definition for CxcMoviDetalle."""
+
+#     # TODO: Define fields here
+#     id          = models.AutoField(primary_key= True)
+#     cotizacion  = models.ForeignKey(CotizacionInformal, related_name= "detalle_cotizacion_informal", on_delete = models.PROTECT)
+#     producto     = models.CharField('producto', max_length=250)
+#     valorCompra = models.FloatField()
+#     valor       = models.FloatField()
+#     cantidad    = models.IntegerField()
+#     vence       = models.DateField('vencimiento:', auto_now=False, auto_now_add=False)
+#     subtotal    = models.FloatField()
+#     descuento   = models.FloatField(default= 0)
+#     iva         = models.FloatField(default= 0)
+#     total       = models.FloatField()
+
+
+#     class Meta:
+#         """Meta definition for DetalleCotizacionInformal."""
+
+#         verbose_name = 'DetalleCotizacionInformal'
+#         verbose_name_plural = 'DetalleCotizacionInformal'
+
+#     def __str__(self): 
+#         return f'{self.id}, {self.producto}'
+
+class NuevaCotizacion(models.Model):
+    """Model definition for NuevaCotizacion."""
 
 
     # TODO: Define fields here
@@ -717,60 +780,156 @@ class CotizacionInformal(models.Model):
     consecutivo        = models.IntegerField()
     numero             = models.CharField('numero', max_length=50, unique=True)
     prefijo            = models.CharField('prefijo', max_length=50)
-    cliente            = models.CharField('cliente', max_length=250)
-    fecha              = models.DateField('Fecha', auto_now=False, auto_now_add=True)
-    hora               = models.TimeField('Hora', auto_now=True, auto_now_add=False)
+    cliente            = models.ForeignKey("configuracion.Terceros",models.PROTECT, related_name="cliente_cotizacion")
     valor              = models.FloatField()
+    fecha              = models.DateField('Fecha', auto_now=False, auto_now_add=False)
+    hora               = models.TimeField('Hora', auto_now=True, auto_now_add=False)
     descuento          = models.FloatField(default = 0)
-    valorLetras        = models.CharField('Valor en letras', max_length=250)
+    valorDomicilio     = models.FloatField(default = 0)
+    # valorLetras        = models.CharField('Valor en letras', max_length=250)
     observacion        = models.CharField('Observacion', max_length=350,blank=True, null=True)
-    formaPago          = models.CharField('formaPago', max_length=100)
+    formaPago          = models.ForeignKey(to='configuracion.FormaPago', related_name="cotizacion_formaPago", on_delete=models.PROTECT)
+    vendedor           = models.ForeignKey(to="configuracion.VendedoresClientes", related_name="cotizacione_vendedor", on_delete=models.PROTECT)
     usuario            = models.ForeignKey("users.User",models.PROTECT)
     valorIva           = models.FloatField(default = 0)
-    valorReteFuente    = models.FloatField(default = 0)
     subtotal           = models.FloatField(default = 0)
+    # pagada             = models.BooleanField(default = False)
+    # fechaVencimiento   = models.DateField('Fecha de vencimiento', auto_now=False, auto_now_add=False)
+    # abono              = models.FloatField(default = 0)
+    # xmlEstado          = models.BooleanField(default = False)
+    # transaccionID      = models.CharField('transaccionID', max_length=500, blank=True, null=True)
+    # cufe               = models.TextField('cufe', blank=True, null=True)
+    # proformada         = models.BooleanField(default = False)
+    # qr                 = models.TextField('qr', blank=True, null=True)
+    # statusFac          = models.CharField('statusFac', max_length=350, blank=True, null=True)
+    valorReteFuente    = models.FloatField(default = 0)
+    # valor_nota_credito = models.FloatField(default = 0)
+    # valor_nota_debito  = models.FloatField(default = 0)
+    # numero_nota_credito= models.CharField('numero nota credito', max_length=50, blank=True, null=True)
+    # numero_nota_debito = models.CharField('numero nota debito', max_length=50, blank=True, null=True)
+    # despachado         = models.BooleanField(default = False)
+    # correoEnviado      = models.BooleanField(default = False)
+    # isElectronica      = models.BooleanField(default = False)
+    # enviadaDian        = models.BooleanField(default = False)
 
     class Meta:
-        """Meta definition for CotizacionInformal."""
+        """Meta definition for NuevaCotizacion."""
 
-        verbose_name = 'CotizacionInformal'
-        verbose_name_plural = 'CotizacionInformal'
-        
+        verbose_name = 'NuevaCotizacion'
+        verbose_name_plural = 'NuevaCotizacion'
 
     def __str__(self): 
         return f'{self.numero}'
     
-  
+    @classmethod
+    def filter_by_criterio_cotizaciones(cls, obj):
+        
+        inicial = True
 
-class DetalleCotizacionInformal(models.Model):
-    """Model definition for CxcMoviDetalle."""
+
+        queryset = cls.objects.filter().select_related(
+            'numeracion',
+            'cliente',
+            'formaPago',
+            'vendedor',
+            'usuario',
+        )
+        
+        if 'prefijo' in obj and obj['prefijo'] is not None and obj['prefijo'].strip()  != '' :
+            queryset = queryset.filter(prefijo__iexact=obj['prefijo'])
+            inicial = False
+
+        if 'numero' in obj and obj['numero'] is not None:
+            queryset = queryset.filter(consecutivo=int(obj['numero']))
+            inicial = False
+
+        if 'cliente' in obj and obj['cliente'] is not None:
+            queryset = queryset.filter(cliente__id=obj['cliente'])
+            inicial = False
+
+        if 'fechaInicial' in obj and 'fechaFinal' in obj and obj['fechaInicial'] is not None and obj['fechaFinal'] is not None:
+            fecha_inicial = obj['fechaInicial']
+            fecha_final = obj['fechaFinal']
+
+
+            fecha_inicial = datetime.strptime(fecha_inicial, "%Y-%m-%dT%H:%M:%S.%fZ")
+            fecha_final = datetime.strptime(fecha_final, "%Y-%m-%dT%H:%M:%S.%fZ")
+
+
+            fecha_inicial = fecha_inicial.strftime("%Y-%m-%d") 
+            fecha_final   = fecha_final.strftime("%Y-%m-%d")
+
+            # fecha_inicial = datetime.strptime(fecha_inicial_str, '%Y-%m-%dT%H:%M:%S')
+            # fecha_final   = datetime  .strptime(fecha_final_str, '%Y-%m-%dT%H:%M:%S')
+
+            if fecha_inicial and fecha_final:
+                queryset = queryset.filter(fecha__gte=fecha_inicial, fecha__lte=fecha_final)
+                inicial = False
+
+        if 'observacion' in obj and obj['observacion'] is not None and obj['observacion'].strip()  != '':
+            queryset = queryset.filter(observacion__icontains=obj['observacion'])
+            inicial = False
+
+        if 'formaPago' in obj and obj['formaPago'] is not None:
+            queryset = queryset.filter(formaPago__id=obj['formaPago'])
+            inicial = False
+
+        if 'vendedor' in obj and obj['vendedor'] is not None:
+            queryset = queryset.filter(vendedor__id=obj['vendedor'])
+            inicial = False
+
+        if 'valor' in obj and obj['valor'] is not None :
+            queryset = queryset.filter(valor=obj['valor'])
+            inicial = False
+        
+       
+
+        if 'estadoDian' in obj and obj['estadoDian'] is not None :
+            queryset = queryset.filter(isElectronica=True, enviadaDian=obj['estadoDian'])
+            inicial = False
+
+      
+        if inicial:
+            return queryset.order_by('-id')
+
+
+        
+        return queryset.order_by('-id')
+    
+    
+
+        
+    
+    
+       
+
+class NuevaCotizacionDetalle(models.Model):
+    """Model definition for NuevaCotizacionDetalle."""
 
     # TODO: Define fields here
     id          = models.AutoField(primary_key= True)
-    cotizacion  = models.ForeignKey(CotizacionInformal, related_name= "detalle_cotizacion_informal", on_delete = models.PROTECT)
-    producto     = models.CharField('producto', max_length=250)
+    factura     = models.ForeignKey(NuevaCotizacion, related_name= "factura_cotizacion", on_delete = models.PROTECT)
+    producto    = models.ForeignKey("stock.Productos", related_name="producto_detalle_cotizacion", on_delete = models.PROTECT)
     valorCompra = models.FloatField()
     valor       = models.FloatField()
     cantidad    = models.IntegerField()
-    vence       = models.DateField('vencimiento:', auto_now=False, auto_now_add=False)
+    # vence       = models.DateField('vencimiento:', auto_now=False, auto_now_add=False)
+    descuento   = models.FloatField()
+    # lote        = models.CharField('lote: ', max_length= 50)
     subtotal    = models.FloatField()
     descuento   = models.FloatField(default= 0)
     iva         = models.FloatField(default= 0)
     total       = models.FloatField()
 
-
     class Meta:
-        """Meta definition for DetalleCotizacionInformal."""
+        """Meta definition for NuevaCotizacion."""
 
-        verbose_name = 'DetalleCotizacionInformal'
-        verbose_name_plural = 'DetalleCotizacionInformal'
+        verbose_name = 'NuevaCotizacion'
+        verbose_name_plural = 'NuevaCotizacion'
 
     def __str__(self): 
-        return f'{self.id}, {self.producto}'
-
+        return f'{self.factura.numero}'
     
-
-
 
 def filter_and_combine(queryset):
     is_electronica_true = queryset.filter(isElectronica=True).order_by('-fecha', '-numero')[:10]

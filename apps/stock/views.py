@@ -39,7 +39,19 @@ def IF_ESTADO_CARTERA_PROVEEDOR(request):
        
         return Response(result)
     
-
+@csrf_exempt
+@api_view(('POST',))
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def CERTIFICADO_RETENCION_PROVEEDOR(request):
+    if request.method == "POST":
+        from apps.stock.informes.proveedores import certificado_retencion_proveedor
+        proveedor_id = request.data['proveedor_id']
+        fecha_inicio   = request.data['fecha_inicio']
+        fecha_fin   = request.data['fecha_fin']
+        result = certificado_retencion_proveedor(proveedor_id,fecha_inicio,fecha_fin)
+        return Response(result)
+    
 @csrf_exempt
 @api_view(('GET',))
 # @authentication_classes([TokenAuthentication])

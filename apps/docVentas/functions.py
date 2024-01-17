@@ -24,6 +24,10 @@ def listadoFacturas():
     obj = {}
     return CxcMovi.filter_by_criterio_ventas(obj)
 
+def listadoCotizaciones():
+    obj = {}
+    return NuevaCotizacion.filter_by_criterio_cotizaciones(obj)
+
 
 
 
@@ -53,7 +57,88 @@ def getInvoce(id):
         ).prefetch_related('detalle_factura','impuesto_cxc','retencion_cxc').get(id = id)
     return cxc
 
+def getCotizacion(id):
+    cot = NuevaCotizacion.objects.select_related(
+        'numeracion',
+        'cliente',
+        'formaPago',
+        'vendedor',
+        'usuario',
+        ).prefetch_related('factura_cotizacion').get(id = id)
+    return cot
 
+
+
+def saveDocCotizacion(create,docVenta,detalle,usuario):
+    newVenta = NuevaCotizacion()
+    print(detalle)
+    if create:
+        # SE HACE EL LLAMADO A LA TABLA NUMERACION, PARA LA RELACIÓN CON LA VENTA
+        num       = numeracion.objects.get(id = docVenta['numeracion'])
+        cliente   = Terceros.objects.get(id   = docVenta['cliente'])
+        formaPago = FormaPago.objects.get(id  = docVenta['formaPago'])
+        vendedor  = VendedoresClientes.objects.get(id  = docVenta['vendedor'])
+        
+
+
+        newVenta.numeracion      = num
+        newVenta.consecutivo     = num.proximaFactura
+        newVenta.prefijo         = num.prefijo
+        newVenta.numero          = num.prefijo+'-'+str(num.proximaFactura).zfill(4)
+        newVenta.cliente         = cliente
+        newVenta.formaPago       = formaPago
+        newVenta.fecha           = date.today()
+        newVenta.observacion     = docVenta['observacion']
+        newVenta.valorLetras     = ""
+        newVenta.vendedor        = vendedor
+        newVenta.usuario         = usuario
+        newVenta.subtotal        = docVenta['subtotal']
+        newVenta.valorReteFuente = docVenta['valorRetenciones']
+        newVenta.valorDomicilio  = docVenta['valorDomicilio']
+        newVenta.valorIva        = docVenta['valorIva']
+        newVenta.descuento       = docVenta['descuento']
+        newVenta.valor           = docVenta['valor']
+        newVenta.valor           += newVenta.valorDomicilio
+
+
+        with transaction.atomic():
+            newVenta.save()
+
+            detalleFacturaSave = []
+            for item in detalle:
+                productoParcial      = item['producto']
+                facturaDetalleObject = NuevaCotizacionDetalle() 
+                kardexObject         = Kardex()
+                product              = Productos.objects.get(id = productoParcial['id'])
+
+                facturaDetalleObject.factura          = newVenta
+                facturaDetalleObject.producto         = product
+                facturaDetalleObject.cantidad         = item['cantidad']
+                facturaDetalleObject.valor            = item['valor']
+                facturaDetalleObject.valorCompra      = item['valorCompra']
+                facturaDetalleObject.lote             = item['lote']
+                
+                # facturaDetalleObject.vence            = item['vence']
+
+                if item['iva'] == None or item['iva'] == '':
+                        facturaDetalleObject.iva = 0
+                else:
+                        facturaDetalleObject.iva = item['iva']
+                
+                if item['descuento'] == None or item['descuento'] == '':
+                        facturaDetalleObject.descuento = 0
+                else:
+                        facturaDetalleObject.descuento = item['descuento']
+                
+                facturaDetalleObject.subtotal = item['subtotal']
+                facturaDetalleObject.total    = item['total']
+
+                facturaDetalleObject.save()
+
+                detalleFacturaSave.append(facturaDetalleObject)
+
+            num.proximaFactura += 1
+            num.save()
 
 def saveDocVenta(create,docVenta,detalle,usuario):
     newVenta = CxcMovi()
@@ -115,7 +200,7 @@ def saveDocVenta(create,docVenta,detalle,usuario):
                             # SE GUARDARÁ LA RETENCIÓN DEL INGRESO
                             reteFac.save()
         
-
+            
            
 
             detalleFacturaSave = []
@@ -417,6 +502,84 @@ def eliminarProducto(id):
         else:
             mensaje_error = f"No se encontró el producto {facturaDetalleObject.producto.codigoDeBarra} con lote {facturaDetalleObject.lote} en el inventario actual"
             raise serializers.ValidationError(mensaje_error)
+
+def eliminarProductoCotizacion(id,retencionCliente):
+    
+    
+    with transaction.atomic():
+        
+
+        cotDetalle = NuevaCotizacionDetalle.objects.get(id = id)
+        cot = NuevaCotizacion.objects.get(id = cotDetalle.factura.id)
+
+
+        cantidad  = cotDetalle.cantidad
+        descuento = cotDetalle.descuento * cantidad
+        iva       = cotDetalle.iva * cantidad
+        subtotal  = cotDetalle.subtotal
+        total     = cotDetalle.total
+
+        if cot.valorIva > 0:
+            cot.valorIva -= iva
+            
+        if cot.valorReteFuente > 0:
+            for x in retencionCliente:
+                base    = (subtotal-descuento)
+                importe = base * x['retencion']['porcentaje'] / 100
+                cot.valorReteFuente -= importe
+                cot.valor           += importe
+                 
+           
+        # if cot.valorReteFuente > 0:
+        #     for x in retencionCotizacion:
+        #         base    = (subtotal-descuento)
+        #         importe = base * x['retencion']['porcentaje'] / 100
+        #         # x.base  -= base
+        #         # x.total -= importe
+        #         cot.valorReteFuente -= importe
+        #         cot.valor           += importe
+                
+            
+                # print(x['retencion']['porcentaje'],'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+                # base    = (subtotal-descuento)
+                # importe = base * x.procentaje / 100
+                # x.base  -= base
+                # x.total -= importe
+                # cot.valorReteFuente -= importe
+                # cot.valor           += importe
+                # if x.total <= 0:
+                #     x.delete()
+                # else:
+                #     x.save()
+            
+        
+        # subtotal = this.subtotalFactura - this.descuentoFactura;
+    #   // console.log(subtotal);
+
+    #   for (let x of this.clienteSeleccionado.retencionCliente) {
+    #     if (x.fija) {
+    #       this.retencionFactura += (subtotal * x.retencion.porcentaje) / 100;
+    #     } else {
+    #       if (subtotal >= x.retencion.base) {
+    #         this.retencionFactura += (subtotal * x.retencion.porcentaje) / 100;
+    #       }
+    #     }
+    #   }
+
+    #   this.totalFactura -= this.retencionFactura;
+    # }
+            # print('toca modificar valor retefuente')
+        
+        cot.subtotal  -= subtotal 
+        cot.descuento -= descuento
+        cot.valor     -= total
+        
+        cotDetalle.delete()
+        cot.save()
+            
+
+        return cot
+        
         
 
 def agregarProducto(idfactura,detalle):
@@ -590,6 +753,97 @@ def agregarProducto(idfactura,detalle):
 
 
                 contabilizarFacturas(cxc,cxcDetalle)
+                
+def agregarProductoCotizacion(idfactura,detalle,retencionCliente):
+    print(retencionCliente,'22222222222222222222222222222222222222222')
+    with transaction.atomic():
+        
+        cxc = NuevaCotizacion.objects.get(id = idfactura)
+
+        item = detalle
+        productoParcial      = item['producto']
+        facturaDetalleObject = NuevaCotizacionDetalle() 
+        product              = Productos.objects.get(id = productoParcial['id'])
+
+        
+        facturaDetalleObject.factura          = cxc
+        facturaDetalleObject.producto         = product
+        facturaDetalleObject.cantidad         = item['cantidad']
+        facturaDetalleObject.valor            = item['valor']
+        facturaDetalleObject.valorCompra      = item['valorCompra']
+        
+
+        if item['iva'] == None or item['iva'] == '':
+                facturaDetalleObject.iva = 0
+        else:
+                facturaDetalleObject.iva = item['iva']
+        
+        if item['descuento'] == None or item['descuento'] == '':
+                facturaDetalleObject.descuento = 0
+        else:
+                facturaDetalleObject.descuento = item['descuento']
+        
+        facturaDetalleObject.subtotal = item['subtotal']
+        facturaDetalleObject.total    = item['total']
+
+        facturaDetalleObject.save()
+
+
+        d = facturaDetalleObject
+    
+        cxc.subtotal  += d.subtotal
+        cxc.valorIva  += d.iva * d.cantidad
+        cxc.descuento += d.descuento * d.cantidad
+        cxc.valor     += d.total
+        
+        if cxc.valorReteFuente >0:
+            for x in retencionCliente:
+                base = (d.subtotal-d.descuento)
+                importe = base * x['retencion']['porcentaje'] / 100
+                cxc.valorReteFuente += importe
+                cxc.valor -= importe
+        else:
+            for r in retencionCliente:
+                
+                if r['fija']:
+        
+                    base       = cxc.subtotal - cxc.descuento
+                    procentaje = r['retencion']['porcentaje']
+                    total      = base * procentaje / 100
+                    
+
+                    cxc.valorReteFuente += total
+                    cxc.valor -= total
+                else:
+                    if r['retencion']['base'] > 0 and (cxc.subtotal - cxc.descuento) >= r['retencion']['base']:
+                        # SE ASIGNARAN SUS DATOS CORRESPONDIENTES
+                         
+                        base       = cxc.subtotal - cxc.descuento
+                        procentaje = r['retencion']['porcentaje']
+                        total      = base * procentaje / 100
+                    
+
+                        cxc.valorReteFuente += total
+                        cxc.valor -= total
+            
+    
+
+        # if retencionCotizacion:
+            
+        #     for x in retencionCotizacion:
+        #         base     = (d.subtotal-d.descuento)
+        #         importe  = base * x['retencion']['porcentaje'] / 100
+                
+        #         cxc.valorReteFuente += importe
+        #         cxc.valor           -= importe   
+        # else:
+        #     cxc.valorReteFuente += 0
+        #     cxc.valor -= 0
+                
+        
+        cxc.save()
+    
+        
                 
 def contabilizarFacturas(cxc:CxcMovi,detalleFactura:CxcMoviDetalle):
     empresa = Empresa.objects.get(id = 1)
@@ -2227,7 +2481,7 @@ def Contabilizar_NotaCredito(nota:NotaCreditoVentas):
         
         if nota.iva > 0:
              
-            for imp in  ImpuestoCxc.objects.filter(factura__id = nota.cxc.id):
+            for imp in  ImpuestoCxc.objects.filter(ingreso__id = nota.ingreso.id):
                     detalle         = asientoDetalle()
                     detalle.asiento = movi
                     detalle.tercero = nota.cliente
