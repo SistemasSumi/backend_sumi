@@ -125,7 +125,7 @@ def certificado_retencion_proveedor( proveedor_id, fecha_inicio, fecha_fin):
                 t."nombreComercial",
                 t.documento,
                 SUM(cxp."reteFuente") AS valor_retenido,
-                SUM(cxp."valorTotal") AS base,
+                SUM(cxp."base") AS base,
                 r."nombre" AS tipo_retencion,
                 r."porcentaje" AS porcentaje_retencion
             FROM
