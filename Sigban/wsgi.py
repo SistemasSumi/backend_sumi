@@ -24,6 +24,6 @@ path_home = str(Path(__file__).parents[1])
 if path_home not in sys.path:
     sys.path.append(path_home)
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'Sigban.settings.local'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'Sigban.settings.prod'
 
 application = get_wsgi_application()
