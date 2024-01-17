@@ -20,6 +20,7 @@ mysqlclient = "*"
 requests = "*"
 django-debug-toolbar = "*"
 fpdf = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
