@@ -1,0 +1,348 @@
+
+<!doctype html>
+<html class="no-js" lang="zxx">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Invce - Invoice HTML Template - Restaurant Bill</title>
+    <meta name="author" content="Angfuzsoft">
+    <meta name="description" content="Invce - Invoice HTML Template">
+    <meta name="keywords" content="Invce - Invoice HTML Template" />
+    <meta name="robots" content="INDEX,FOLLOW">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Favicons - Place favicon.ico in the root directory -->
+    <link rel="apple-touch-icon" sizes="57x57" href="assets/img/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="assets/img/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="assets/img/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="assets/img/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/img/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="assets/img/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/img/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicons/favicon-16x16.png">
+    <link rel="manifest" href="assets/img/favicons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="assets/img/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <!--==============================
+	  Google Fonts
+	============================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+
+    <!--==============================
+	    All CSS File
+	============================== -->
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="http://dismemag.com/static/css/bootstrap.min.css">
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="http://dismemag.com/static/css/style.css">
+
+</head>
+
+<body>
+
+
+    <!--[if lte IE 9]>
+    	<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+
+    <!--********************************
+   		Code Start From Here 
+	******************************** -->
+
+    <div class="invoice-container-wrap">
+        <div class="invoice-container">
+            <main>
+                <!--============================== Invoice Area  ==============================-->
+                <div class="as-invoice invoice_style3">
+                    <div class="download-inner" id="contentToPrint">
+                        <!--==============================	Header Area ==============================-->
+                        <header class="as-header header-layout1">
+                           
+                            <div class="row align-items-center justify-content-between">
+                                <div class="col-auto">
+                                    <div class="header-logo" >
+                                        {% comment %} <a  href="index.html"><img src="https://firebasestorage.googleapis.com/v0/b/sigban-autentication.appspot.com/o/Recurso%202%404x.png?alt=media&token=c5cafca3-4437-4e07-9d65-5c42f57d4ae8" width="120" alt="Invce"></a> {% endcomment %}
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <h1 class="big-title">FACTURA DE VENTA</h1>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="header-logo">
+                                    <a  href="index.html"><img src="https://firebasestorage.googleapis.com/v0/b/sigban-autentication.appspot.com/o/Recurso%202%404x.png?alt=media&token=c5cafca3-4437-4e07-9d65-5c42f57d4ae8" width="120" alt="Invce"></a>
+                                </div>
+                            </div>
+                            <div class="header-bottom">
+                                <div class="row align-items-center justify-content-end">
+                                    <div class="col-auto">
+                                        <p class="invoice-number me-4"><b>PRE FACTURA No: </b># DS-0001</p>
+                                    </div>
+                                    <div class="col-auto">
+                                        <p class="invoice-date"><b>FECHA DE LA FACTURA: </b>12/08/2022</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </header>
+                        <div class="row justify-content-between mb-4">
+                            <div class="col-auto">
+                                <div class="invoice-left">
+                                    <b>EMPRESA:</b>
+                                    <address>
+                                        Dismemag  <br>
+                                        1083040134-5  <br>
+                                        MZ 13 CA 5 BARRIO LUZ DEL MUNDO, SANTA MARTA.<br>
+                                        +(57) 301 299-0955, <br>
+                                        ventas@dismemag.com
+                                    </address>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="invoice-right">
+                                    <b>Cliente:</b>
+                                    <address>
+                                        RADIOIMAGENES RADIOLOGOS ASOCIADOS SAS <br>
+                                        CL. 22 #13-84, Santa Marta, <br>
+                                        NIT: 800222844 <br>
+                                        Orden: #565
+                                    </address>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="col-auto">
+                                <div class="invoice-left">
+                                
+                                    <address>
+                                        Resolución de Facturación No. 18764033364979 de Fecha 11/02/2023.
+                                    </address>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="invoice-table table-stripe" >
+                            <thead >
+                                <tr style="padding-top: 0;padding-bottom: 0">
+                                    <th width="2%">N°</th>
+                                    <th >Producto</th>
+                                    <th width="5%">Und</th>
+                                    <th width="5%">Cant.</th>
+                                    <th width="10">Precio</th>
+                                    
+                                    <th width="2">Iva </th>
+                                    <th width="2%">Desc </th>
+                                    <th width="10%">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size:10px">
+                                <tr>
+                                    <td>1</td>
+                                    <td>EXTENSION PARA ANESTECIA</td>
+                                    <td>UND</td>
+                                    <td>1000</td>
+                                    <td>$1,088.00</td>
+                                    <td>0.00</td>
+                                    <td>0.00</td>
+                                    <td>$1,088,000.00</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>PAPEL CAMILLA AZUL 90 </td>
+                                    <td>UND</td>
+                                    <td>50</td>
+                                    <td>$85,085.00</td>
+                                    <td>0.00</td>
+                                    <td>0.00</td>
+                                    <td>$4,254,250.00</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>LAMINAS PORTAOBJECTO </td>
+                                    <td>UND</td>
+                                    <td>25</td>
+                                    <td>$8,200.00</td>
+                                    <td>0.00</td>
+                                    <td>0.00</td>
+                                    <td>$205,000.00</td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        <div class="row justify-content-between">
+                            <div class="col-auto">
+                                <div class="invoice-left">
+                                    <b>Información de pago:</b>
+                                    <p class="mb-0">CTA No: 51735172135 <br> A/C Nombre: JAILIN ALEJANDRA FERRER MARQUEZ <br> Banco: Bancolombia S.A., <br> Santa Marta, Magdalena</p>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <table class="total-table">
+                                    <tr>
+                                        <th>Sub Total:</th>
+                                        <td>$5,547,250.00</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Descuento:</th>
+                                        <td>$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <th>IVA:</th>
+                                        <td>$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <th>RTF:</th>
+                                        <td>$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Total:</th>
+                                        <td>$5,547,250.00</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <p class="invoice-note mt-3 text-center">
+                            <svg width="13" height="16" viewBox="0 0 13 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3.22969 12.6H9.77031V11.4H3.22969V12.6ZM3.22969 9.2H9.77031V8H3.22969V9.2ZM1.21875 16C0.89375 16 0.609375 15.88 0.365625 15.64C0.121875 15.4 0 15.12 0 14.8V1.2C0 0.88 0.121875 0.6 0.365625 0.36C0.609375 0.12 0.89375 0 1.21875 0H8.55156L13 4.38V14.8C13 15.12 12.8781 15.4 12.6344 15.64C12.3906 15.88 12.1063 16 11.7812 16H1.21875ZM7.94219 4.92V1.2H1.21875V14.8H11.7812V4.92H7.94219ZM1.21875 1.2V4.92V1.2V14.8V1.2Z" fill="#1CB9C8" />
+                            </svg>
+                            <b>NOTA: </b>SOLO SE ACEPTAN RECLAMOS DURANTE LAS 36 HORAS SIGUIENTES AL RECIBO
+                            DE ESTA MERCANCÍA - PRODUCTOS REFRIGERADOS NO SE ACEPTA DEVOLUCIÓN..
+                        </p>
+                        <div class="footer-info">
+                            <div class="row gx-0 justify-content-center">
+                                <div class="col-auto">
+                                    <span class="info left">Call: +153 654 3648</span>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="info right">www.invcerestaurant.com</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="body-shape3">
+                            <svg width="850" height="127" viewBox="0 0 850 127" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <mask id="mask0_2_2031" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="850" height="127">
+                                    <path d="M850 0H0V42.3333H150.317C192.985 42.3333 234.534 55.9786 268.894 81.2752L278.106 88.0581C312.466 113.355 354.015 127 396.683 127H850V0Z" fill="#f2f2f2" />
+                                </mask>
+                                <g mask="url(#mask0_2_2031)">
+                                    <rect width="862" height="457" transform="matrix(-1 0 0 1 856 -126)" fill="#f2f2f2" />
+                                    <g style="mix-blend-mode:soft-light" opacity="0.2">
+                                        <path d="M850 0H0V42.3333H194.1C231.031 42.3333 266.305 57.6646 291.5 84.6667C316.695 111.669 351.969 127 388.9 127H850V0Z" fill="#f2f2f2" />
+                                    </g>
+                                </g>
+                            </svg>
+
+                        </div>
+                    </div>
+                    <div class="invoice-buttons">
+                        <button class="print_btn">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M11.9688 8.46875C12.1146 8.32292 12.2917 8.25 12.5 8.25C12.7083 8.25 12.8854 8.32292 13.0312 8.46875C13.1771 8.61458 13.25 8.79167 13.25 9C13.25 9.20833 13.1771 9.38542 13.0312 9.53125C12.8854 9.67708 12.7083 9.75 12.5 9.75C12.2917 9.75 12.1146 9.67708 11.9688 9.53125C11.8229 9.38542 11.75 9.20833 11.75 9C11.75 8.79167 11.8229 8.61458 11.9688 8.46875ZM13.5 5.5C14.1875 5.5 14.7708 5.75 15.25 6.25C15.75 6.72917 16 7.3125 16 8V12C16 12.1458 15.9479 12.2708 15.8438 12.375C15.7604 12.4583 15.6458 12.5 15.5 12.5H13.5V15.5C13.5 15.6458 13.4479 15.7604 13.3438 15.8438C13.2604 15.9479 13.1458 16 13 16H3C2.85417 16 2.72917 15.9479 2.625 15.8438C2.54167 15.7604 2.5 15.6458 2.5 15.5V12.5H0.5C0.354167 12.5 0.229167 12.4583 0.125 12.375C0.0416667 12.2708 0 12.1458 0 12V8C0 7.3125 0.239583 6.72917 0.71875 6.25C1.21875 5.75 1.8125 5.5 2.5 5.5V1C2.5 0.729167 2.59375 0.5 2.78125 0.3125C2.96875 0.104167 3.1875 0 3.4375 0H10.375C10.7917 0 11.1458 0.145833 11.4375 0.4375L13.0625 2.0625C13.3542 2.35417 13.5 2.70833 13.5 3.125V5.5ZM4 1.5V5.5H12V3.5H10.5C10.3542 3.5 10.2292 3.45833 10.125 3.375C10.0417 3.27083 10 3.14583 10 3V1.5H4ZM12 14.5V12.5H4V14.5H12ZM14.5 11V8C14.5 7.72917 14.3958 7.5 14.1875 7.3125C14 7.10417 13.7708 7 13.5 7H2.5C2.22917 7 1.98958 7.10417 1.78125 7.3125C1.59375 7.5 1.5 7.72917 1.5 8V11H14.5Z" fill="white" />
+                            </svg>
+                            <span>Print</span>
+                        </button>
+                        <button onclick="makePDF()">dd</button>
+                        {% comment %} <button onclick="getPDF()" id="downloadbtn" style="display: inline-block;"><b>Click to Download HTML as PDF</b></button> {% endcomment %}
+                    </div>
+                </div>
+
+
+            </main>
+        </div>
+    </div>
+    <!-- Invoice Conainter End -->
+
+    <!--==============================
+    All Js File
+============================== -->
+    <!-- Jquery -->
+    {% comment %} <script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="assets/js/bootstrap.min.js"></script>
+    <!-- PDF Generator -->
+    <script src="assets/js/jspdf.min.js"></script>
+    <script src="assets/js/html2canvas.min.js"></script>
+    <!-- Main Js File -->{% endcomment %}
+     
+
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script>
+       
+        function makePDF() {
+
+            var quotes = document.getElementById('contentToPrint');
+        
+            html2canvas(quotes, {
+                onrendered: function(canvas) {
+        
+                //! MAKE YOUR PDF
+                var pdf = new jsPDF('p', 'pt', 'letter');
+        
+                for (var i = 0; i <= quotes.clientHeight/980; i++) {
+                    //! This is all just html2canvas stuff
+                    var srcImg  = canvas;
+                    var sX      = 0;
+                    var sY      = 980*i; // start 980 pixels down for every new page
+                    var sWidth  = 900;
+                    var sHeight = 980;
+                    var dX      = 0;
+                    var dY      = 0;
+                    var dWidth  = 900;
+                    var dHeight = 980;
+        
+                    window.onePageCanvas = document.createElement("canvas");
+                    onePageCanvas.setAttribute('width', 900);
+                    onePageCanvas.setAttribute('height', 980);
+                    var ctx = onePageCanvas.getContext('2d');
+                    // details on this usage of this function: 
+                    // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
+                    ctx.drawImage(srcImg,sX,sY,sWidth,sHeight,dX,dY,dWidth,dHeight);
+        
+                    // document.body.appendChild(canvas);
+                    var canvasDataURL = onePageCanvas.toDataURL("image/png", 1.0);
+        
+                    var width         = onePageCanvas.width;
+                    var height        = onePageCanvas.clientHeight;
+        
+                    //! If we're on anything other than the first page,
+                    // add another page
+                    if (i > 0) {
+                        pdf.addPage(612, 791); //8.5" x 11" in pts (in*72)
+                    }
+                    //! now we declare that we're working on that page
+                    pdf.setPage(i+1);
+                    //! now we add content to that page!
+                    pdf.addImage(canvasDataURL, 'PNG', 20, 40, (width*.62), (height*.62));
+        
+                }
+                //! after the for loop is finished running, we save the pdf.
+                pdf.save('test.pdf');
+            }
+
+            
+          });
+
+          $(document).ready(function () {
+            makePDF();
+            
+        });
+    </script>
+    
+     
+ 
+</body>
+
+</html>
