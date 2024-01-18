@@ -198,7 +198,6 @@ def EliminarProductoCotizacion(request):
     if request.method == "POST":
         id = request.data['id']
         retencionCliente = request.data['retencionCliente']
-        print(retencionCliente,'22222222222222222222244444444444444444444444444444444445555555555555555555')
         eliminarProductoCotizacion(id,retencionCliente)
         return Response({'data':'ok'})
     
