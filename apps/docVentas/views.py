@@ -316,6 +316,38 @@ def descargarXMLFEView(request):
         # nota = NotaCreditoVentas.objects.get(numero = numero)
         # pdf = obtenerPDFFacturaNota(nota)
         return Response({'data':nc})
+    
+@csrf_exempt
+@api_view(('GET','POST'))
+def descargarXMLFEViewNC(request):
+    import base64
+    import io
+
+    if request.method == "GET":
+        numero  = request.GET.get('numero')
+        print(numero)
+       
+        nc = descargarXMLNC(numero)
+        try:
+            # Decodificar la cadena Base64 en datos binarios
+            archivo_binario = base64.b64decode(nc)
+
+            # Configurar la respuesta HTTP para la descarga
+            response = HttpResponse(archivo_binario, content_type='application/octet-stream')
+            response['Content-Disposition'] = 'attachment; filename='+numero+'.xml'
+
+            return response
+        except Exception as e:
+            # Manejar errores aquí (por ejemplo, si la cadena Base64 es inválida)
+            return HttpResponse("Error al descargar el archivo: " + str(e))
+        return HttpResponse(nc,content_type="application/pdf")
+        
+    if request.method == "POST":
+        numero  = request.data['numero']
+        nc = enviarNotaCredito(numero)
+        # nota = NotaCreditoVentas.objects.get(numero = numero)
+        # pdf = obtenerPDFFacturaNota(nota)
+        return Response({'data':nc})
 
 
 @csrf_exempt

@@ -29,6 +29,7 @@ urlpatterns = [
     path('facturas/invoce/envio/dian/', pruebaEnvioFactura, name="fac"),
     path('facturas/nc/envio/dian/', pruebaEnvioFacturaNC, name="fac"),
     path('facturas/invoce/xml/download/', descargarXMLFEView, name="fac"),
+    path('facturas/nc/xml/download/', descargarXMLFEViewNC, name="fac"),
     path('proforma/a/factura/',proformaAFactura),
     path('proforma/busqueda/', busquedaAvanzadaProformas, name="fac"),
     path('cxc/', CXC, name="fac"),

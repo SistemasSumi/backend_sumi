@@ -1207,6 +1207,15 @@ def descargarXMLFE(numero:str):
     xml = fe.crear_xml_factura()
     return xml
 
+def descargarXMLNC(numero:str):
+
+    notaCredito = NotaCreditoVentas.objects.get(numero = numero)
+
+    nc = GenerateRequestNC(notaCredito)
+
+    xml = nc.crear_xml_nc()
+    return xml
+
 
 
 def obtenerCufeFactura(factura:CxcMovi):
@@ -1360,9 +1369,6 @@ def enviarNotaCredito(numero):
         except Exception as ex:
             raise serializers.ValidationError(f'ERROR AL ENVIAR LA FACTURA: {nota.numero} ERROR: {ex}')
              
-             
-        
-        
         dictionary = xmltodict.parse(response.text)
         print(dictionary)
         
