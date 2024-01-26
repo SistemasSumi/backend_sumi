@@ -503,7 +503,7 @@ def eliminarProducto(id):
             mensaje_error = f"No se encontró el producto {facturaDetalleObject.producto.codigoDeBarra} con lote {facturaDetalleObject.lote} en el inventario actual"
             raise serializers.ValidationError(mensaje_error)
 
-def eliminarProductoCotizacion(id,retencionCliente):
+def eliminarProductoCotizacion(id,):
     
     
     with transaction.atomic():
