@@ -71,7 +71,7 @@ def getCotizacion(id):
 
 def saveDocCotizacion(create,docVenta,detalle,usuario):
     newVenta = NuevaCotizacion()
-    print(detalle)
+    
     if create:
         # SE HACE EL LLAMADO A LA TABLA NUMERACION, PARA LA RELACIÓN CON LA VENTA
         num       = numeracion.objects.get(id = docVenta['numeracion'])
@@ -511,6 +511,7 @@ def eliminarProductoCotizacion(id,retencionCliente):
 
         cotDetalle = NuevaCotizacionDetalle.objects.get(id = id)
         cot = NuevaCotizacion.objects.get(id = cotDetalle.factura.id)
+        
 
 
         cantidad  = cotDetalle.cantidad
@@ -523,11 +524,11 @@ def eliminarProductoCotizacion(id,retencionCliente):
             cot.valorIva -= iva
             
         if cot.valorReteFuente > 0:
-            for x in retencionCliente:
-                base    = (subtotal-descuento)
-                importe = base * x['retencion']['porcentaje'] / 100
-                cot.valorReteFuente -= importe
-                cot.valor           += importe
+            # for x in retencionCliente:
+            base    = (subtotal-descuento)
+            importe = (base * 2.5) / 100
+            cot.valorReteFuente -= importe
+            cot.valor           += importe
                  
            
         # if cot.valorReteFuente > 0:
@@ -755,10 +756,11 @@ def agregarProducto(idfactura,detalle):
                 contabilizarFacturas(cxc,cxcDetalle)
                 
 def agregarProductoCotizacion(idfactura,detalle,retencionCliente):
-    print(retencionCliente,'22222222222222222222222222222222222222222')
+    
     with transaction.atomic():
         
         cxc = NuevaCotizacion.objects.get(id = idfactura)
+        
 
         item = detalle
         productoParcial      = item['producto']

@@ -14,9 +14,13 @@ urlpatterns = [
     path('arl/', ArlView, name="fac"),
     path('caja/', Caja, name="fac"),
     path('cesantias/', Cesantias, name="fac"),
+    
+    path('deduccion/', Deducciones, name="fac"),
+    path('ingreso/', Ingresos, name="fac"),
   
-  
+    
     path('empleados/', empleado_view, name="fac"),
+    path('empleadosContrato/', empleadoContrato_view, name="fac"),
   
 
     

@@ -8,7 +8,7 @@ from apps.contabilidad.functions import EliminarAsiento, obtener_asiento
 
 
 
-def saveDefaultConceptosAndTipos(archivo):
+def  saveDefaultConceptosAndTipos(archivo):
     for x in archivo:
         with transaction.atomic():
             tipo     = tiposDeConcepto.objects.get_or_create(nombre = x['tipoDeConcepto'], defaults={'nombre':x['tipoDeConcepto']})[0]

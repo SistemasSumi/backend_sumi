@@ -71,8 +71,6 @@ class CajaSerializer(serializers.ModelSerializer):
 
 class CesantiaSerializer(serializers.ModelSerializer):
     
-   
-
     class Meta:
         model  = FondoCesantias
         fields = ('__all__')
@@ -82,6 +80,30 @@ class CesantiaSerializer(serializers.ModelSerializer):
         response = super().to_representation(instance)
         response['tercero'] = instance.tercero.nombreComercial
     
+        return response
+    
+class DeduccionSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model  = DeduccionRecurrente
+        fields = ('__all__')
+
+    def to_representation(self, instance):
+        
+        response = super().to_representation(instance)
+        response['concepto'] = instance.concepto.nombre
+        return response
+
+class IngresoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model  = IngresoRecurrente
+        fields = ('__all__')
+
+    def to_representation(self, instance):
+        
+        response = super().to_representation(instance)
+        response['concepto'] = instance.concepto.nombre
         return response
 
 
@@ -125,7 +147,7 @@ class ContratoSerializer(serializers.ModelSerializer):
     eps = EpsSerializer()
     arl = ArlSerializer()
     fondoPension = PensionSerializer()
-    fondoCesantias = FondoCesantias()
+    fondoCesantias = CesantiaSerializer()
     cajaCompensacion = CajaSerializer()
    
  
@@ -137,6 +159,7 @@ class ContratoSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
             response = super().to_representation(instance)
+            
 
             response['riesgo']         = convertir_choice_diccionario(instance.riesgo,Contrato.RIESGOS_CHOICES)
             response['tipoTrabajador'] = convertir_choice_diccionario(instance.tipoTrabajador,Contrato.TIPO_TRABAJADOR_CHOICES)
@@ -163,3 +186,13 @@ class EmpleadoSerializer(serializers.ModelSerializer):
         response['formaDepago'] =  convertir_choice_diccionario(instance.formaDepago,Empleado.FORMADEAPGO_CHOICES)
         response['tipoDocumento'] =  convertir_choice_diccionario(instance.tipoDocumento,Empleado.TIPOSDOCUMENTOS_CHOICES)
         return response
+
+class NominaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Nomina
+        fields = '__all__'
+
+class NominaDetalleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NominaDetalle
+        fields = '__all__'

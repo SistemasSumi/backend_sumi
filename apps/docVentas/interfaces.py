@@ -1017,7 +1017,7 @@ class GenerateRequestNC():
         # Crear el elemento <DRF>
         DRF   = ET.SubElement(root,'DRF')
         # NUMERO DE AUTORIZACION O RESOLUCION OTORGADO PARA FAC ELECTRONICA
-        DRF_1 = ET.SubElement(DRF,'DRF_1').text=str(self.nota.cxc.numeracion.resolucion)
+        DRF_1 = ET.SubElement(DRF,'DRF_1').text=str(self.nota.numeracion.resolucion)
         # FECHA DE INICIO DEL PERIODO DE RESOLUCION OTORGADO
         DRF_2 = ET.SubElement(DRF,'DRF_2').text=self.nota.cxc.numeracion.fecha_inicio.strftime("%Y-%m-%d")
         # FECHA DE FINAL DEL PERIODO DE RESOLUCION OTORGADO

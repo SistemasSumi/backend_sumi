@@ -52,7 +52,7 @@ class Eps(models.Model):
 
     # TODO: Define fields here
     id       = models.AutoField(primary_key= True)
-    concepto = models.ForeignKey(to="nomina.Concepto", on_delete=models.PROTECT)
+    concepto = models.ForeignKey(Concepto, on_delete=models.PROTECT)
     tercero  = models.ForeignKey(to="configuracion.Terceros", on_delete=models.PROTECT)
 
 
@@ -72,7 +72,7 @@ class FondoPension(models.Model):
 
     # TODO: Define fields here
     id       = models.AutoField(primary_key= True)
-    concepto = models.ForeignKey(to="nomina.Concepto", on_delete=models.PROTECT)
+    concepto = models.ForeignKey(Concepto, on_delete=models.PROTECT)
     tercero  = models.ForeignKey(to="configuracion.Terceros", on_delete=models.PROTECT)
 
 
@@ -94,8 +94,10 @@ class Arl(models.Model):
 
     # TODO: Define fields here
     id       = models.AutoField(primary_key= True)
-    concepto = models.ForeignKey(to="nomina.Concepto", on_delete=models.PROTECT)
+    concepto = models.ForeignKey(Concepto, on_delete=models.PROTECT)
     tercero  = models.ForeignKey(to="configuracion.Terceros", on_delete=models.PROTECT)
+    
+     
     # riesgo   = models.FloatField('Riesgo:',choices=RIESGOS_CHOICES,blank=True, null=True)
     
 
@@ -118,10 +120,9 @@ class FondoCesantias(models.Model):
 
     # TODO: Define fields here
     id       = models.AutoField(primary_key= True)
-    concepto = models.ForeignKey(to="nomina.Concepto", on_delete=models.PROTECT)
+    concepto = models.ForeignKey(Concepto, on_delete=models.PROTECT)
     tercero  = models.ForeignKey(to="configuracion.Terceros", on_delete=models.PROTECT)
-
-
+    
 
     class Meta:
         """Meta definition for FondoCesantias."""
@@ -139,7 +140,7 @@ class Sena(models.Model):
 
     # TODO: Define fields here
     id       = models.AutoField(primary_key= True)
-    concepto = models.ForeignKey(to="nomina.Concepto", on_delete=models.PROTECT)
+    concepto = models.ForeignKey(Concepto, on_delete=models.PROTECT)
     tercero  = models.ForeignKey(to="configuracion.Terceros", on_delete=models.PROTECT)
 
 
@@ -152,7 +153,7 @@ class Sena(models.Model):
 
     def __str__(self):
         """Unicode representation of Sena."""
-        self.tercero.nombreComercial
+        return self.tercero.nombreComercial
 
 
 class CajaCompensacion(models.Model):
@@ -160,7 +161,7 @@ class CajaCompensacion(models.Model):
 
     # TODO: Define fields here
     id       = models.AutoField(primary_key= True)
-    concepto = models.ForeignKey(to="nomina.Concepto", on_delete=models.PROTECT)
+    concepto = models.ForeignKey(Concepto, on_delete=models.PROTECT)
     tercero  = models.ForeignKey(to="configuracion.Terceros", on_delete=models.PROTECT)
 
 
@@ -173,7 +174,7 @@ class CajaCompensacion(models.Model):
 
     def __str__(self):
         """Unicode representation of CajaCompensacion."""
-        self.tercero.nombreComercial
+        return self.tercero.nombreComercial
 
 
 
@@ -185,7 +186,7 @@ class ICBF(models.Model):
 
     # TODO: Define fields here
     id       = models.AutoField(primary_key= True)
-    concepto = models.ForeignKey(to="nomina.Concepto", on_delete=models.PROTECT)
+    concepto = models.ForeignKey(Concepto, on_delete=models.PROTECT)
     tercero  = models.ForeignKey(to="configuracion.Terceros", on_delete=models.PROTECT)
 
 
@@ -198,8 +199,75 @@ class ICBF(models.Model):
 
     def __str__(self):
         """Unicode representation of ICBF."""
-        self.tercero.nombreComercial
+        return self.tercero.nombreComercial
     
+class IngresoRecurrente(models.Model):
+    """Model definition for IngresoRecurrente."""
+
+
+    salarial   = 1
+    noSalarial = 2
+
+    TIPO_CHOICES = (
+        (salarial, 'Salarial'),
+        (noSalarial, 'No Salarial'),
+       
+    )
+
+    tipo           = models.IntegerField('tipo: ',choices = TIPO_CHOICES, default = salarial)
+    concepto       = models.ForeignKey(Concepto,related_name = "ingresoRecurrente_conceptos" ,on_delete = models.PROTECT)
+    valorMensual   = models.FloatField('Valor Mensual:')
+    valorQuincenal = models.FloatField('Valor Quincena:')
+
+
+    # TODO: Define fields here
+
+
+
+    class Meta:
+        """Meta definition for IngresoRecurrente."""
+
+        verbose_name = 'IngresoRecurrente'
+        verbose_name_plural = 'IngresoRecurrentes'
+
+    def __str__(self):
+        """Unicode representation of IngresoRecurrente."""
+        return f'Tipo:{self.tipo} Monto:{self.valorMensual}'
+    
+
+class DeduccionRecurrente(models.Model):
+    """Model definition for DeduccionRecurrente."""
+
+
+    salarial   = 1
+    noSalarial = 2
+
+    TIPO_CHOICES = (
+        (salarial, 'Salarial'),
+        (noSalarial, 'No Salarial'),
+       
+    )
+
+    tipo           = models.IntegerField('tipo: ',choices = TIPO_CHOICES, default = salarial)
+    concepto       = models.ForeignKey(Concepto,related_name = "deduccionRecurrente_conceptos" ,on_delete = models.PROTECT)
+    valorMensual   = models.FloatField('Valor Mensual:')
+    valorQuincenal = models.FloatField('Valor Quincena:')
+
+
+    # TODO: Define fields here
+
+
+
+    class Meta:
+        """Meta definition for DeduccionRecurrente."""
+
+        verbose_name = 'DeduccionRecurrente'
+        verbose_name_plural = 'DeduccionRecurrentes'
+
+    def __str__(self):
+        """Unicode representation of DeduccionRecurrente."""
+        return f'Tipo:{self.tipo} Monto:{self.valorMensual}'
+
 
 
 
@@ -266,7 +334,7 @@ class Contrato(models.Model):
         (INDEPENDIENTE_CONTRATO_SERVICIOS, 'Independiente con contrato de prestación de servicios superior a 1 mes'),
     )
 
-
+    id               = models.AutoField(primary_key = True)
     salarioBase      = models.FloatField(default=0)
     valorDia         = models.FloatField(default=0)
     noContrato       = models.CharField('N° Contrato', max_length=50)
@@ -283,14 +351,71 @@ class Contrato(models.Model):
     sena             = models.ForeignKey(Sena, on_delete=models.PROTECT,related_name="sena_empleado", blank=True, null=True)
     riesgo           = models.FloatField('Riegos:', choices=RIESGOS_CHOICES)
     usuario          = models.ForeignKey(to="users.User", on_delete=models.PROTECT, related_name="usuario_contrato_creacion")
+    deduccionesRecurrentes = models.ManyToManyField(DeduccionRecurrente,  related_name="deduccionRecurrente_empleado", blank=True, null=True)
+    ingresosRecurrentes = models.ManyToManyField(IngresoRecurrente,  related_name="ingresoRecurrente_empleado", blank=True, null=True)
 
 
+    @classmethod
+    def actualizar_contrato(cls, contrato_id, formulario, user):
+        from datetime import datetime
+        from apps.configuracion.models import Terceros
+                
+        actContrato = cls.objects.get(id=contrato_id)
+        actContrato.salarioBase = formulario.get('salarioBase',actContrato.salarioBase)
+        
+        riesgo_data=formulario.get('riesgo')
+        if riesgo_data is not None and isinstance(riesgo_data, str):
+            print('se cumple la condicion de actualizacion riesgo',riesgo_data)
+            actContrato.riesgo = float(formulario['riesgo'])
+            
+        tipoContrato_data=formulario.get('tipoContrato')
+        if tipoContrato_data is not None and isinstance(tipoContrato_data, str):
+            print('se cumple la condicion de actualizacion tipoContrato',tipoContrato_data)
+            actContrato.tipoContrato=(formulario['tipoContrato'][0])
+            
+        
+        
+        arl_data = formulario.get('arl')
+        if arl_data is not None and isinstance(arl_data, int):
+            arl_instancia = Arl.objects.get(id=arl_data)
+            actContrato.arl = arl_instancia
+         
+            
+        eps_data = formulario.get('eps')
+        if eps_data is not None and isinstance(eps_data, int):
+            eps_instancia = Eps.objects.get(id=eps_data)
+            actContrato.eps = eps_instancia
+        
+            
+        pension_data = formulario.get('fondoPension')
+        if pension_data is not None and isinstance(pension_data, int):
+            pension_instancia = FondoPension.objects.get(id=pension_data)
+            actContrato.fondoPension = pension_instancia
+        
+            
+        cesantias_data = formulario.get('fondoCesantias')
+        if cesantias_data is not None and isinstance(cesantias_data,int):
+            cesantias_instancia = FondoCesantias.objects.get(id=cesantias_data)
+            actContrato.fondoCesantias = cesantias_instancia
+            
+        caja_data = formulario.get('cajaCompensacion')
+        if caja_data is not None and isinstance(caja_data,int):
+            caja_instancia = CajaCompensacion.objects.get(id=caja_data)
+            actContrato.cajaCompensacion = caja_instancia
+            
+        actContrato.save()
+
+        return actContrato
+    
     # TODO: Define fields here
     class Meta:
         """Meta definition for Contrato."""
 
         verbose_name = 'Contrato'
         verbose_name_plural = 'Contratos'
+    
+    
+
 
     def __str__(self):
         """Unicode representation of Contrato."""
@@ -356,7 +481,7 @@ class Empleado(models.Model):
     def crear_empleado_con_contrato(cls, formulario, user):
         from datetime import datetime
         from apps.configuracion.models import Terceros
-        print(formulario)
+       
       
         fecha_nacimiento =  datetime.strptime(formulario['fechaNacimiento'], "%Y-%m-%dT%H:%M:%S.%fZ")
         # Formatear el objeto datetime como una cadena "YYYY-MM-DD"
@@ -365,8 +490,8 @@ class Empleado(models.Model):
         tercero = Terceros.objects.get(id = formulario['tercero'] )
 
         with transaction.atomic():
-            nombres   = formulario['nombres'].split("-")
-            apellidos = formulario['apellidos'].split("-")
+            nombres   = formulario['nombres'].split(" ")
+            apellidos = formulario['apellidos'].split(" ")
             empleado = Empleado(
                 foto = formulario['foto'],
                 primerNombre=nombres[0],
@@ -402,6 +527,33 @@ class Empleado(models.Model):
             fondoPension_id     = FondoPension.objects.get(id   = formulario['fondoPension'] )
             fondoCesantias_id   = FondoCesantias.objects.get(id = formulario['fondoCesantias'] )
             cajaCompensacion_id = CajaCompensacion.objects.get(id = formulario['cajaCompensacion'] )
+            # ingresosRecurrentes_id = IngresoRecurrente.objects.get('ingresosRecurrentes',ingresosRecurrentes_id )
+            # deduccionesRecurrentes_id = DeduccionRecurrente.objects.get('deduccionesRecurrentes',deduccionesRecurrentes_id )
+            
+            deduccionesRecurrentes = formulario.get('deduccionesRecurrentes', [])  # Obtén la lista de identificadores
+
+            deduccionesRecurrentes_id = []  # Inicializa una lista para almacenar los objetos DeduccionRecurrente
+
+            for deduccion_id in deduccionesRecurrentes:
+                try:
+                    deduccion_instancia = DeduccionRecurrente.objects.get(id=deduccion_id)
+                    deduccionesRecurrentes_id.append(deduccion_instancia)
+                except DeduccionRecurrente.DoesNotExist:
+                    # Manejo de excepción si no se encuentra el objeto con el ID dado
+                    pass
+                
+            ingresosRecurrentes = formulario.get('ingresosRecurrentes', [])  # Obtén la lista de identificadores
+
+            ingresosRecurrentes_id = []  # Inic
+                
+            for ingreso_id in ingresosRecurrentes:
+                try:
+                    ingreso_instancia = IngresoRecurrente.objects.get(id=ingreso_id)
+                    ingresosRecurrentes_id.append(ingreso_instancia)
+                except IngresoRecurrente.DoesNotExist:
+                    # Manejo de excepción si no se encuentra el objeto con el ID dado
+                    pass
+
 
             contrato = Contrato.objects.create(
                 salarioBase=float(formulario['salarioBase']),
@@ -417,12 +569,47 @@ class Empleado(models.Model):
                 noContrato=formulario['noContrato'],
                 tipoContrato=formulario['tipoContrato'],
                 tipoTrabajador=formulario['tipoTrabajador'],
-                usuario = user
+                usuario = user,
                 # Resto de los campos...
             )
+            contrato.ingresosRecurrentes.set([ingreso.id for ingreso in ingresosRecurrentes_id])
+
+            contrato.deduccionesRecurrentes.set([deduccion.id for deduccion in deduccionesRecurrentes_id])
+
             empleado.contrato = contrato
             empleado.save()
             return empleado
+        
+    @classmethod
+    def actualizar_empleado_con_contrato_datos_personales(cls, empleado_id, formulario, user):
+        from datetime import datetime
+        from apps.configuracion.models import Terceros
+        
+        
+        actEmpleado = cls.objects.get(id=empleado_id)
+        actEmpleado.primerNombre = formulario.get('primerNombre', actEmpleado.primerNombre)
+        actEmpleado.segundoNombre = formulario.get('segundoNombre', actEmpleado.segundoNombre)
+        actEmpleado.segundoNombre = formulario.get('segundoNombre', actEmpleado.segundoNombre)
+        
+        actEmpleado.primerApellido = formulario.get('primerApellido', actEmpleado.primerApellido)
+        actEmpleado.segundoApellido = formulario.get('segundoApellido', actEmpleado.segundoApellido)
+        
+        actEmpleado.documento = formulario.get('documento', actEmpleado.documento)
+        
+        fecha_nacimiento = datetime.strptime(formulario['fechaNacimiento'], "%Y-%m-%dT%H:%M:%S.%fZ").date()      
+        actEmpleado.fechaNacimiento = fecha_nacimiento
+        
+        actEmpleado.correo = formulario.get('correo', actEmpleado.correo)
+        
+        actEmpleado.telefono = formulario.get('telefono', actEmpleado.telefono)
+        
+        actEmpleado.direccion = formulario.get('direccion', actEmpleado.direccion)
+        
+        actEmpleado.Cargo = formulario.get('Cargo', actEmpleado.Cargo)
+
+        actEmpleado.save()
+
+        return actEmpleado
 
     
 
@@ -435,39 +622,57 @@ class Empleado(models.Model):
     def __str__(self):
         """Unicode representation of Empleado."""
         return f'Primer Nombre:{self.primerNombre} Primer Apellido:{self.primerApellido}'
-
-
-
-
-class IngresoRecurrente(models.Model):
-    """Model definition for IngresoRecurrente."""
-
-
-    salarial   = 1
-    noSalarial = 2
-
-    TIPO_CHOICES = (
-        (salarial, 'Salarial'),
-        (noSalarial, 'No Salarial'),
-       
-    )
-
-    tipo           = models.IntegerField('tipo: ',choices = TIPO_CHOICES, default = salarial)
-    concepto       = models.ForeignKey(Concepto,related_name = "ingresoRecurrente_conceptos" ,on_delete = models.PROTECT)
-    valorMensual   = models.FloatField('Valor Mensual:')
-    valorQuincenal = models.FloatField('Valor Quincena:')
-
-
-    # TODO: Define fields here
-
-
-
-    class Meta:
-        """Meta definition for IngresoRecurrente."""
-
-        verbose_name = 'IngresoRecurrente'
-        verbose_name_plural = 'IngresoRecurrentes'
+    
+    
+class Nomina(models.Model):
+    id = models.AutoField(primary_key=True)
+    numeracion = models.CharField('Numeración:', max_length=255)
+    prefijo = models.CharField('Prefijo:', max_length=255)
+    consecutivo = models.IntegerField('Consecutivo:')
+    numero = models.IntegerField('Número:')
+    fecha_inicio_pago = models.FloatField('Fecha de inicio de pago:')
+    fecha_fin_pago = models.FloatField('Fecha de fin de pago:')
+    total_pago = models.FloatField('Total de pago:')
+    total_vacaciones = models.FloatField('Total de vacaciones:')
+    total_primas = models.FloatField('Total de primas:' )
+    total_cesantias = models.FloatField('Total de cesantías:' )
+    total_c_intereses = models.FloatField('Total de intereses sobre cesantías:' )
+    numero_trabajadores = models.IntegerField('Número de trabajadores:')
+    total_salud = models.FloatField('Total de aportes a salud:' )
+    total_pension = models.FloatField('Total de aportes a pensión:')
+    total_arl = models.FloatField('Total de aportes a ARL:' )
+    total_caja = models.FloatField('Total de aportes a caja de compensación:')
 
     def __str__(self):
-        """Unicode representation of IngresoRecurrente."""
-        return f'Tipo:{self.tipo} Monto:{self.valorMensual}'
+        return f'Nomina {self.id} - {self.fecha_inicio_pago} a {self.fecha_fin_pago}'
+    
+class NominaDetalle(models.Model):
+    id = models.AutoField(primary_key=True)
+    fk_nomina = models.ForeignKey(Nomina, on_delete=models.PROTECT, verbose_name='Nómina relacionada',related_name='detalles_nomina')
+    fk_numeracion = models.ForeignKey(to='configuracion.numeracion',on_delete=models.PROTECT, max_length=255, related_name='numeracion_nomina_detalle')
+    numero = models.IntegerField('Número:')
+    consecutivo = models.IntegerField('Consecutivo:')
+    prefijo = models.CharField('Prefijo:', max_length=255)
+    fk_contrato = models.ForeignKey(Contrato, on_delete=models.PROTECT, verbose_name='Contrato relacionado')
+    fk_descuentos = models.ForeignKey(DeduccionRecurrente, on_delete=models.PROTECT, verbose_name='Descuentos relacionados')
+    fk_ingresos = models.ForeignKey(IngresoRecurrente, on_delete=models.PROTECT, verbose_name='Ingresos relacionados')
+    salario_base = models.FloatField('Salario base:')
+    auxilio = models.FloatField('Auxilio:')
+    dias_trabajados = models.IntegerField('Días trabajados:')
+    pago_base = models.FloatField('Pago base:')
+    total_tra_salud = models.FloatField('Total trabajador aportes salud:')
+    total_tra_pension = models.FloatField('Total trabajador aportes pensión:')
+    total_emp_arl = models.FloatField('Total empleador aportes ARL:')
+    total_emp_eps = models.FloatField('Total empleador aportes EPS:')
+    total_emp_pension = models.FloatField('Total empleador aportes pensión:')
+    total_emp_cesantias = models.FloatField('Total empleador aportes cesantías:')
+    total_emp_intereses = models.FloatField('Total empleador intereses sobre cesantías:')
+    total_primas = models.FloatField('Total primas:')
+    total_vacaciones = models.FloatField('Total vacaciones:')
+
+    def __str__(self):
+        return f'Detalle de Nómina {self.id} - Nómina: {self.fk_nomina} - Contrato: {self.fk_contrato}'
+
+
+
+
