@@ -108,7 +108,7 @@ def CotizacionReport(request):
         if request.GET.get('id'):
             id = request.GET.get('id')
             cot = getCotizacion(id)
-            print(cot)
+            # print(cot)
             return Response(CotizacionSerializer(cot).data)
 
 
@@ -197,8 +197,8 @@ def EliminarProducto(request):
 def EliminarProductoCotizacion(request):
     if request.method == "POST":
         id = request.data['id']
-        
-        eliminarProductoCotizacion(id)
+        retencionCliente = request.data['retencionCliente']
+        eliminarProductoCotizacion(id,retencionCliente)
         return Response({'data':'ok'})
     
 

@@ -503,7 +503,7 @@ def eliminarProducto(id):
             mensaje_error = f"No se encontró el producto {facturaDetalleObject.producto.codigoDeBarra} con lote {facturaDetalleObject.lote} en el inventario actual"
             raise serializers.ValidationError(mensaje_error)
 
-def eliminarProductoCotizacion(id,):
+def eliminarProductoCotizacion(id,retencionCliente):
     
     
     with transaction.atomic():
@@ -524,11 +524,12 @@ def eliminarProductoCotizacion(id,):
             cot.valorIva -= iva
             
         if cot.valorReteFuente > 0:
-            # for x in retencionCliente:
-            base    = (subtotal-descuento)
-            importe = (base * 2.5) / 100
-            cot.valorReteFuente -= importe
-            cot.valor           += importe
+            for x in retencionCliente:
+                print(x['retencion']['porcentaje'])
+                base    = (subtotal-descuento)
+                importe = (base * x['retencion']['porcentaje']) / 100
+                cot.valorReteFuente -= importe
+                cot.valor           += importe
                  
            
         # if cot.valorReteFuente > 0:
