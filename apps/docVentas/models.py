@@ -680,6 +680,82 @@ class PagosVentas(models.Model):
         """Unicode representation of PagosCompras."""
         return self.numero
     
+    
+    @classmethod
+    def filter_ci(cls, obj):
+  
+        queryset = cls.objects.all().prefetch_related('cliente','numeracion','cuenta')
+        inicial = True
+
+        if 'numero' in obj and obj['numero'] is not None:
+            queryset = queryset.filter(numero=obj['numero'])
+            inicial = False
+
+        if 'consecutivo' in obj and obj['consecutivo'] is not None:
+            queryset = queryset.filter(consecutivo=obj['consecutivo'])
+            inicial = False
+
+        if 'year' in obj and obj['year'] is not None:
+            queryset = queryset.filter(fecha__year=obj['year'])
+            inicial = False
+
+        if 'mes' in obj and obj['mes'] is not None:
+            queryset = queryset.filter(fecha__month=obj['mes'])
+            inicial = False
+
+        if 'fechaInicial' in obj and 'fechaFinal' in obj and obj['fechaInicial'] is not None and obj['fechaFinal'] is not None:
+                fecha_inicial = obj['fechaInicial']
+                fecha_final = obj['fechaFinal']
+
+                fecha_inicial = datetime.strptime(fecha_inicial, "%Y-%m-%dT%H:%M:%S.%fZ")
+                fecha_final = datetime.strptime(fecha_final, "%Y-%m-%dT%H:%M:%S.%fZ")
+
+                fecha_inicial = fecha_inicial.strftime("%Y-%m-%d") 
+                fecha_final   = fecha_final.strftime("%Y-%m-%d")
+
+
+                if fecha_inicial and fecha_final:
+                    queryset = queryset.filter(fecha__gte=fecha_inicial, fecha__lte=fecha_final)
+                    inicial = False
+
+        if 'observacion' in obj and obj['observacion'] is not None:
+            queryset = queryset.filter(observacion__icontains=obj['observacion'])
+            inicial = False
+
+        if 'total' in obj and obj['total'] is not None:
+            queryset = queryset.filter(total=obj['total'])
+            inicial = False
+
+        if 'cuenta' in obj and obj['cuenta'] is not None:
+            queryset = queryset.filter(cuenta__id=obj['cuenta'])
+            inicial = False
+
+        if 'factura' in obj and obj['factura'] is not None:
+            queryset = queryset.filter(detalle_compra__factura__icontains=obj['factura'])
+            inicial = False
+        
+        if 'orden' in obj and obj['orden'] is not None:
+            queryset = queryset.filter(detalle_compra__orden__numero=obj['orden'])
+            inicial = False
+
+
+        if 'cliente' in obj and obj['cliente'] is not None:
+            queryset = queryset.filter(cliente__id=obj['cliente'])
+            inicial = False
+
+
+        if 'concepto' in obj and obj['concepto'] is not None:
+            queryset = queryset.filter(concepto__icontains=obj['concepto'])
+            inicial = False
+            
+        
+
+        if inicial:
+            
+            return queryset.order_by('-fecha','-id')[:20]
+
+        return queryset.order_by('-fecha','-id')
+    
 
 class DetailPaymentInvoiceVentas(models.Model):
     """Model definition for PagoDetalle."""

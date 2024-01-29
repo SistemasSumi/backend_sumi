@@ -177,6 +177,14 @@ def busquedaAvanzadaCI(request):
     if request.method == 'POST':
         filtro = CxcVentas.filter_cxc(request.data)
         return Response(CxcVentasSerializer(filtro, many = True).data)
+    
+@csrf_exempt
+@api_view(('GET','POST'))
+def BusquedaAvanzadaCompIng(request):
+    if request.method == "POST":
+        obj = request.data 
+        result = PagosVentas.filter_ci(obj)
+        return Response(PagoVentasSerializer(result,many = True).data)
 
 
     
@@ -427,7 +435,7 @@ def ImprimirIngreso(request):
 def Ingreso(request):
 
     if request.method == "GET":
-        pagos = PagosVentas.objects.all().order_by('-id')[:20]
+        pagos = PagosVentas.filter_ci({})
         return Response(PagoVentasSerializer(pagos, many = True).data)
 
     if request.method == "POST":

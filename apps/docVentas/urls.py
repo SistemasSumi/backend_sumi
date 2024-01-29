@@ -24,6 +24,7 @@ urlpatterns = [
     path('facturas/invoce/xml/', pruebaXml, name="fac"),
     path('obtenerFacturas/', getFacturasXCliente, name="fac"),
     path('ingreso/', Ingreso, name="fac"),
+    path('ingreso/busqueda/', BusquedaAvanzadaCompIng, name="fac"),
     path('ingreso/imprimir/', ImprimirIngreso, name="fac"),
     path('ventas_x_vendedor/', VentasPorVendedor, name="fac"),
     path('facturas/invoce/envio/dian/', pruebaEnvioFactura, name="fac"),
