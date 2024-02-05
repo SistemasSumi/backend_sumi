@@ -53,6 +53,17 @@ def obtenerConceptos(request):
             Q(tipo__nombre= 'Seguridad Social') | Q(tipo__nombre= 'Prestaciones Sociales')
         )
         return Response(ConceptoSerializer(conceptos, many=True).data)
+    
+@csrf_exempt
+@api_view(('GET','POST'))
+def obtenerConceptosIngresos(request):
+    if request.method == "GET":
+        conceptos  = Concepto.objects.filter(
+            Q(tipo__nombre= 'Ingresos No Constitutivos de Salario') | Q(tipo__nombre= 'Ingresos Constitutivos de Salario') | Q(tipo__nombre= 'Deducciones')
+        )
+        return Response(ConceptoSerializer(conceptos, many=True).data)
+    
+
 
 
 @csrf_exempt
@@ -172,6 +183,26 @@ def Cesantias(request):
     
 @csrf_exempt
 @api_view(('GET','POST'))
+def Cesantias(request):
+    if request.method == "GET":
+        cesantias_id = request.GET.get('id')
+        if cesantias_id:
+            fondo = FondoCesantias.objects.get(id=cesantias_id)
+            serializer = CesantiaSerializer(fondo)
+            return Response(serializer.data)
+        else:
+            fondo = FondoCesantias.objects.all()
+            return Response(CesantiaSerializer(fondo, many=True).data)
+
+    if request.method == "POST":
+        print(request.data)
+        serializer = CesantiaSerializer(data = request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'data':'ok'})
+    
+@csrf_exempt
+@api_view(('GET','POST'))
 def Deducciones(request):
     if request.method == "GET":
         deduccion_id = request.GET.get('id')
@@ -184,11 +215,15 @@ def Deducciones(request):
             return Response(DeduccionSerializer(deducciones, many=True).data)
 
     if request.method == "POST":
-        print(request.data)
-        serializer = DeduccionSerializer(data = request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({'data':'ok'})
+        try:
+            print(request.data)
+            serializer = DeduccionSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(DeduccionSerializer(serializer).data)
+        except Exception as e:
+            # Devuelve un mensaje de error general
+            return Response({'error': str(e)}, status=500)
     
     
 
@@ -198,7 +233,7 @@ def Ingresos(request):
     if request.method == "GET":
         ingreso_id = request.GET.get('id')
         if ingreso_id:
-            ingresos = DeduccionRecurrente.objects.get(id=ingreso_id)
+            ingresos = IngresoRecurrente.objects.get(id=ingreso_id)
             serializer = IngresoSerializer(ingresos)
             return Response(serializer.data)
         else:
@@ -210,7 +245,7 @@ def Ingresos(request):
         serializer = IngresoSerializer(data = request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({'data':'ok'})
+        return Response(serializer.data)
 
 
 

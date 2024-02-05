@@ -525,51 +525,12 @@ def eliminarProductoCotizacion(id,retencionesArray):
             
         if cot.valorReteFuente > 0:
             for xporcent in retencionesArray:
+                print(cot.cliente.retencion_cliente.retencion)
                 base    = (subtotal-descuento)
                 importe = (base * xporcent) / 100
                 cot.valorReteFuente -= importe
                 cot.valor           += importe
                  
-           
-        # if cot.valorReteFuente > 0:
-        #     for x in retencionCotizacion:
-        #         base    = (subtotal-descuento)
-        #         importe = base * x['retencion']['porcentaje'] / 100
-        #         # x.base  -= base
-        #         # x.total -= importe
-        #         cot.valorReteFuente -= importe
-        #         cot.valor           += importe
-                
-            
-                # print(x['retencion']['porcentaje'],'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-                # base    = (subtotal-descuento)
-                # importe = base * x.procentaje / 100
-                # x.base  -= base
-                # x.total -= importe
-                # cot.valorReteFuente -= importe
-                # cot.valor           += importe
-                # if x.total <= 0:
-                #     x.delete()
-                # else:
-                #     x.save()
-            
-        
-        # subtotal = this.subtotalFactura - this.descuentoFactura;
-    #   // console.log(subtotal);
-
-    #   for (let x of this.clienteSeleccionado.retencionCliente) {
-    #     if (x.fija) {
-    #       this.retencionFactura += (subtotal * x.retencion.porcentaje) / 100;
-    #     } else {
-    #       if (subtotal >= x.retencion.base) {
-    #         this.retencionFactura += (subtotal * x.retencion.porcentaje) / 100;
-    #       }
-    #     }
-    #   }
-
-    #   this.totalFactura -= this.retencionFactura;
-    # }
-            # print('toca modificar valor retefuente')
         
         cot.subtotal  -= subtotal 
         cot.descuento -= descuento
@@ -2281,6 +2242,7 @@ def obtener_productos_x_factura(idfactura):
 def registrar_notacredito(create, notaC, notaCDetalle,usuario):
         NewnotaC = NotaCreditoVentas()
         ValidarNotaC(notaC)
+        print(notaC,'ESTA ES LA NC')
         if create:
                 num       = numeracion.objects.get(id = notaC['numeracion'])
                 cxc       = CxcMovi.objects.get(id = notaC['factura'])
@@ -2300,6 +2262,7 @@ def registrar_notacredito(create, notaC, notaCDetalle,usuario):
                 NewnotaC.observacion     = notaC['observacion']
                 NewnotaC.subtotal        = notaC['subtotal']
                 NewnotaC.usuario         = usuario   
+                
 
                 if notaC['iva'] is None or notaC['iva']  == '':
                         NewnotaC.iva = 0
@@ -2394,6 +2357,8 @@ def registrar_notacredito(create, notaC, notaCDetalle,usuario):
     
 def Contabilizar_NotaCredito(nota:NotaCreditoVentas):
         empresa = Empresa.objects.get(id = 1)
+        
+        print('CONTABILIZAAAAAAANDO',nota)
 
         movi               = asiento()
         movi.numero        = nota.numero
@@ -2489,7 +2454,7 @@ def Contabilizar_NotaCredito(nota:NotaCreditoVentas):
         
         if nota.iva > 0:
              
-            for imp in  ImpuestoCxc.objects.filter(ingreso__id = nota.ingreso.id):
+            for imp in  ImpuestoCxc.objects.filter(ingreso__id = 4693):
                     detalle         = asientoDetalle()
                     detalle.asiento = movi
                     detalle.tercero = nota.cliente

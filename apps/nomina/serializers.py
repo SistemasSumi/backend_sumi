@@ -160,7 +160,6 @@ class ContratoSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
             response = super().to_representation(instance)
             
-
             response['riesgo']         = convertir_choice_diccionario(instance.riesgo,Contrato.RIESGOS_CHOICES)
             response['tipoTrabajador'] = convertir_choice_diccionario(instance.tipoTrabajador,Contrato.TIPO_TRABAJADOR_CHOICES)
             response['tipoContrato']   = convertir_choice_diccionario(instance.tipoContrato,Contrato.TIPOCONTRATO_CHOICES)

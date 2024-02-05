@@ -359,49 +359,65 @@ class Contrato(models.Model):
     def actualizar_contrato(cls, contrato_id, formulario, user):
         from datetime import datetime
         from apps.configuracion.models import Terceros
-                
+        
         actContrato = cls.objects.get(id=contrato_id)
-        actContrato.salarioBase = formulario.get('salarioBase',actContrato.salarioBase)
+        
+        salario_data = formulario.get('salarioBase')  
+        if salario_data is not None:    
+            actContrato.salarioBase = formulario.get('salarioBase',actContrato.salarioBase)
         
         riesgo_data=formulario.get('riesgo')
-        if riesgo_data is not None and isinstance(riesgo_data, str):
-            print('se cumple la condicion de actualizacion riesgo',riesgo_data)
-            actContrato.riesgo = float(formulario['riesgo'])
+        if riesgo_data is not None:
+            actContrato.riesgo = float(riesgo_data['valor'])
             
         tipoContrato_data=formulario.get('tipoContrato')
-        if tipoContrato_data is not None and isinstance(tipoContrato_data, str):
-            print('se cumple la condicion de actualizacion tipoContrato',tipoContrato_data)
-            actContrato.tipoContrato=(formulario['tipoContrato'][0])
+        if tipoContrato_data is not None:
+            actContrato.tipoContrato=(tipoContrato_data['valor'])
+            
+        ingreso_recurrente_data = formulario.get('ingresosRecurrentes')
+        if ingreso_recurrente_data is not None:
+        # Obtén o crea la instancia de IngresoRecurrente
+            instancia = IngresoRecurrente.objects.create(**ingreso_recurrente_data)
+        # Agrega la instancia a la relación many-to-many sin eliminar las existentes
+            actContrato.ingresosRecurrentes.add(instancia)
             
         
         
         arl_data = formulario.get('arl')
-        if arl_data is not None and isinstance(arl_data, int):
-            arl_instancia = Arl.objects.get(id=arl_data)
+        if arl_data is not None:
+            arl_instancia = Arl.objects.get(id=arl_data['id'])
             actContrato.arl = arl_instancia
          
             
         eps_data = formulario.get('eps')
-        if eps_data is not None and isinstance(eps_data, int):
-            eps_instancia = Eps.objects.get(id=eps_data)
+        if eps_data is not None:
+            eps_instancia = Eps.objects.get(id=eps_data['id'])
             actContrato.eps = eps_instancia
         
             
         pension_data = formulario.get('fondoPension')
-        if pension_data is not None and isinstance(pension_data, int):
-            pension_instancia = FondoPension.objects.get(id=pension_data)
+        if pension_data is not None:
+            pension_instancia = FondoPension.objects.get(id=pension_data['id'])
             actContrato.fondoPension = pension_instancia
         
             
         cesantias_data = formulario.get('fondoCesantias')
-        if cesantias_data is not None and isinstance(cesantias_data,int):
-            cesantias_instancia = FondoCesantias.objects.get(id=cesantias_data)
+        if cesantias_data is not None:
+            cesantias_instancia = FondoCesantias.objects.get(id=cesantias_data['id'])
             actContrato.fondoCesantias = cesantias_instancia
             
         caja_data = formulario.get('cajaCompensacion')
-        if caja_data is not None and isinstance(caja_data,int):
-            caja_instancia = CajaCompensacion.objects.get(id=caja_data)
+        if caja_data is not None:
+            caja_instancia = CajaCompensacion.objects.get(id=caja_data['id'])
             actContrato.cajaCompensacion = caja_instancia
+            
+        fechaInicial_data = datetime.strptime(formulario['fechaInicioContrato'], "%Y-%m-%dT%H:%M:%S.%fZ").date()
+        if fechaInicial_data is not None:      
+            actContrato.fechaInicioContrato = fechaInicial_data.strftime("%Y-%m-%d")
+        
+        fechaFinal_data = datetime.strptime(formulario['fechaFinalContrato'], "%Y-%m-%dT%H:%M:%S.%fZ").date()      
+        if fechaFinal_data is not None:
+            actContrato.fechaFinalContrato = fechaFinal_data.strftime("%Y-%m-%d")
             
         actContrato.save()
 
@@ -597,7 +613,7 @@ class Empleado(models.Model):
         actEmpleado.documento = formulario.get('documento', actEmpleado.documento)
         
         fecha_nacimiento = datetime.strptime(formulario['fechaNacimiento'], "%Y-%m-%dT%H:%M:%S.%fZ").date()      
-        actEmpleado.fechaNacimiento = fecha_nacimiento
+        actEmpleado.fechaNacimiento = fecha_nacimiento.strftime("%Y-%m-%d")
         
         actEmpleado.correo = formulario.get('correo', actEmpleado.correo)
         
@@ -606,6 +622,14 @@ class Empleado(models.Model):
         actEmpleado.direccion = formulario.get('direccion', actEmpleado.direccion)
         
         actEmpleado.Cargo = formulario.get('Cargo', actEmpleado.Cargo)
+        
+        actEmpleado.banco = formulario.get('banco', actEmpleado.banco)
+        
+        actEmpleado.noCuenta = formulario.get('noCuenta', actEmpleado.noCuenta)
+        
+        formaDePago_data=formulario.get('formaDepago')
+        if formaDePago_data is not None:
+            actEmpleado.formaDepago=(formaDePago_data['valor'])
 
         actEmpleado.save()
 
