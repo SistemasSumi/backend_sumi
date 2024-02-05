@@ -2454,7 +2454,7 @@ def Contabilizar_NotaCredito(nota:NotaCreditoVentas):
         
         if nota.iva > 0:
              
-            for imp in  ImpuestoCxc.objects.filter(ingreso__id = 4693):
+            for imp in  ImpuestoCxc.objects.filter(id = 955):
                     detalle         = asientoDetalle()
                     detalle.asiento = movi
                     detalle.tercero = nota.cliente
