@@ -1100,7 +1100,7 @@ class GenerateRequestNC():
                 # VALOR DEL IVA POR ITEM
                 print('El inva')
                 print(x.iva*x.cantidad)
-                TII_1 = ET.SubElement(TII,'TII_1').text=str(x.iva*x.cantidad)
+                TII_1 = ET.SubElement(TII,'TII_1').text=str(round(x.iva*x.cantidad))
                 # MODEDA LOCAL DE COLOMBIA
                 TII_2 = ET.SubElement(TII,'TII_2').text='COP'
                 # true para autoretenedores
@@ -1110,7 +1110,7 @@ class GenerateRequestNC():
                 # CODIGO EQUIVALENTE AL IVA 
                 IIM_1 = ET.SubElement(IIM,'IIM_1').text='01'
                 # VALOR TOTAL DEL IVA POR ITEM 
-                IIM_2 = ET.SubElement(IIM,'IIM_2').text=str(x.iva*x.cantidad)
+                IIM_2 = ET.SubElement(IIM,'IIM_2').text=str(round(x.iva*x.cantidad))
                 # MODEDA LOCAL DE COLOMBIA
                 IIM_3 = ET.SubElement(IIM,'IIM_3').text='COP'
                 # BASE IMPONIBLE SUBTOTAL-(x.descuento*x.cantidad)
