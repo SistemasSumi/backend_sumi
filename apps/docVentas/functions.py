@@ -2357,9 +2357,7 @@ def registrar_notacredito(create, notaC, notaCDetalle,usuario):
     
 def Contabilizar_NotaCredito(nota:NotaCreditoVentas):
         empresa = Empresa.objects.get(id = 1)
-        
-        print('CONTABILIZAAAAAAANDO',nota)
-
+    
         movi               = asiento()
         movi.numero        = nota.numero
         movi.fecha         = nota.fecha
@@ -2454,7 +2452,7 @@ def Contabilizar_NotaCredito(nota:NotaCreditoVentas):
         
         if nota.iva > 0:
              
-            for imp in  ImpuestoCxc.objects.filter(id = 955):
+            for imp in  ImpuestoCxc.objects.filter(factura_id = cxc.id):
                     detalle         = asientoDetalle()
                     detalle.asiento = movi
                     detalle.tercero = nota.cliente
