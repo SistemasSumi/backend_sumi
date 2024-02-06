@@ -92,7 +92,7 @@ def rotacion_productos_x_ventas(fecha_inicio,fecha_fin):
                 query_ventas = CxcMoviDetalle.objects.filter(
                         producto__id = x['id'],
                         factura__fecha__range=[fecha_inicio, fecha_fin],
-                        ).exclude(factura__numeracion__tipo = '9')
+                        ).exclude(factura__numeracion__tipoDocumento = '9')
                 for i in query_ventas:
                         rotacion_x_ventas += i.cantidad
                         
