@@ -45,6 +45,21 @@ def rotacion_productos_x_ventas(fecha_inicio,fecha_fin):
         ultima_venta_subquery = CxcMovi.objects.filter(
                 detalle_factura__producto__id=OuterRef('id')
         ).order_by('-fecha').values('fecha')[:1]
+             
+        rotacion_compras_subquery = Ingreso.objects.filter(
+            ingreso_detalle__producto=OuterRef('pk'),  # Usa OuterRef para hacer referencia al producto actual
+            fecha__range=[fecha_inicio, fecha_fin]
+        ).annotate(
+            total_compras=Sum('ingreso_detalle__cantidad')
+        ).values('total_compras')[:1]
+
+        # Consulta para calcular la rotación de ventas
+        rotacion_ventas_subquery = CxcMovi.objects.filter(
+            detalle_factura__producto=OuterRef('pk'),  # Usa OuterRef para hacer referencia al producto actual
+            fecha__range=[fecha_inicio, fecha_fin]
+        ).annotate(
+            total_ventas=Sum('detalle_factura__cantidad')
+        ).values('total_ventas')[:1]
 
         query = Productos.objects.filter(
                 producto_detalle_factura__factura__fecha__range=[fecha_inicio, fecha_fin]
@@ -52,8 +67,12 @@ def rotacion_productos_x_ventas(fecha_inicio,fecha_fin):
         
                 tipoDeProducto=F('tipoProducto__nombre')
         ).annotate(
-                rotacion_compras=Coalesce(Sum('ingreso_producto__cantidad', filter=Q(ingreso_producto__ingreso__fecha__range=[fecha_inicio, fecha_fin])), 0),
-                rotacion_x_ventas=Coalesce(Sum('producto_detalle_factura__cantidad', filter=Q(producto_detalle_factura__factura__fecha__range=[fecha_inicio, fecha_fin])), 0),
+                rotacion_compras=Coalesce(
+                        Subquery(rotacion_compras_subquery), 0
+                ),
+                rotacion_x_ventas=Coalesce(
+                    Subquery(rotacion_ventas_subquery), 0
+                ),
                 existencia=Coalesce(
                         F('producto_detalle_factura__producto__stock_inicial'),  # Campo de modelo relacionado
                         Value(0),  # Valor predeterminado en caso de que sea nulo
