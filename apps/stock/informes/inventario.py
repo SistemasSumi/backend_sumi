@@ -252,7 +252,7 @@ def rotacion_productos_x_compras(fecha_inicio,fecha_fin):
             fecha__range=[fecha_inicio, fecha_fin]
         ).annotate(
             total_compras=Sum('ingreso_detalle__cantidad')
-        ).values('total_compras')[:1]
+        ).values('total_compras')
 
         # Consulta para calcular la rotación de ventas
         rotacion_ventas_subquery = CxcMovi.objects.filter(
@@ -260,7 +260,7 @@ def rotacion_productos_x_compras(fecha_inicio,fecha_fin):
             fecha__range=[fecha_inicio, fecha_fin]
         ).annotate(
             total_ventas=Sum('detalle_factura__cantidad')
-        ).values('total_ventas')[:1]
+        ).values('total_ventas')
 
 
         query = Productos.objects.filter(
