@@ -259,9 +259,6 @@ def empleado_view(request):
     if request.method == 'GET':
 
         empleados = Empleado.objects.select_related('tercero','contrato').all()
-        
-
-
         return Response(EmpleadoSerializer(empleados,many=True).data)
     
     if request.method == 'PUT':

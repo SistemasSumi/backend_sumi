@@ -108,7 +108,6 @@ def saveDocCotizacion(create,docVenta,detalle,usuario):
             for item in detalle:
                 productoParcial      = item['producto']
                 facturaDetalleObject = NuevaCotizacionDetalle() 
-                kardexObject         = Kardex()
                 product              = Productos.objects.get(id = productoParcial['id'])
 
                 facturaDetalleObject.factura          = newVenta
@@ -139,6 +138,30 @@ def saveDocCotizacion(create,docVenta,detalle,usuario):
 
             num.proximaFactura += 1
             num.save()
+    else:
+        print('Este es el documento de venta ',docVenta)
+        
+        
+        updateVenta = NuevaCotizacion.objects.get(id = docVenta['id'])
+        cliente     = Terceros.objects.get(id   = docVenta['cliente'])
+        formaPago   = FormaPago.objects.get(id  = docVenta['formaPago'])
+        
+        
+
+        updateVenta.vendedor       = cliente.vendedor
+        updateVenta.formaPago      = formaPago
+        updateVenta.cliente        = cliente       
+        updateVenta.fecha          = date.today()
+        updateVenta.valorDomicilio = docVenta['valorDomicilio']
+        updateVenta.valor          = docVenta['valor']
+        updateVenta.observacion    = docVenta['observacion']
+        updateVenta.valor += updateVenta.valorDomicilio
+        updateVenta.valorReteFuente = docVenta['valorRetenciones']
+        
+
+        updateVenta.save()
+           
+        return updateVenta.numero
 
 def saveDocVenta(create,docVenta,detalle,usuario):
     newVenta = CxcMovi()
@@ -525,7 +548,7 @@ def eliminarProductoCotizacion(id,retencionesArray):
             
         if cot.valorReteFuente > 0:
             for xporcent in retencionesArray:
-                print(cot.cliente.retencion_cliente.retencion)
+
                 base    = (subtotal-descuento)
                 importe = (base * xporcent) / 100
                 cot.valorReteFuente -= importe

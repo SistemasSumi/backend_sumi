@@ -555,7 +555,9 @@ def IF_ROTACION_VENTAS(request):
 
         fecha_inicio = request.data['fecha_inicio']
         fecha_fin    = request.data['fecha_fin']
-       
+        
+        
+        
         result = rotacion_productos_x_ventas(fecha_inicio,fecha_fin)
        
         return Response(result)
