@@ -9,7 +9,7 @@ from django.db.models.functions import Coalesce
 from datetime import date
 from datetime import datetime
 from apps.stock.models import Inventario,IngresoDetalle,Ingreso,Productos,CxPCompras,Bodega,tipoProducto
-from apps.docVentas.models import CxcMovi
+from apps.docVentas.models import CxcMovi,CxcMoviDetalle
 from apps.configuracion.models import Terceros
 from rest_framework import serializers 
 import json
@@ -247,20 +247,20 @@ def rotacion_productos_x_compras(fecha_inicio,fecha_fin):
         ).order_by('-fecha').values('fecha')[:1]
 
         
-        rotacion_compras_subquery = Ingreso.objects.filter(
-            ingreso_detalle__producto=OuterRef('pk'),  # Usa OuterRef para hacer referencia al producto actual
-            fecha__range=[fecha_inicio, fecha_fin]
-        ).annotate(
-            total_compras=Sum('ingreso_detalle__cantidad')
-        ).values('total_compras')
+        # rotacion_compras_subquery = Ingreso.objects.filter(
+        #     ingreso_detalle__producto=OuterRef('pk'),  # Usa OuterRef para hacer referencia al producto actual
+        #     fecha__range=[fecha_inicio, fecha_fin]
+        # ).annotate(
+        #     total_compras=Sum('ingreso_detalle__cantidad')
+        # ).values('total_compras')
 
-        # Consulta para calcular la rotación de ventas
-        rotacion_ventas_subquery = CxcMovi.objects.filter(
-            detalle_factura__producto=OuterRef('pk'),  # Usa OuterRef para hacer referencia al producto actual
-            fecha__range=[fecha_inicio, fecha_fin]
-        ).annotate(
-            total_ventas=Sum('detalle_factura__cantidad')
-        ).values('total_ventas')
+        # # Consulta para calcular la rotación de ventas
+        # rotacion_ventas_subquery = CxcMovi.objects.filter(
+        #     detalle_factura__producto=OuterRef('pk'),  # Usa OuterRef para hacer referencia al producto actual
+        #     fecha__range=[fecha_inicio, fecha_fin]
+        # ).annotate(
+        #     total_ventas=Sum('detalle_factura__cantidad')
+        # ).values('total_ventas')
 
 
         query = Productos.objects.filter(
@@ -269,15 +269,7 @@ def rotacion_productos_x_compras(fecha_inicio,fecha_fin):
         
                 tipoDeProducto=F('tipoProducto__nombre')
         ).annotate(
-                 rotacion_compras=Coalesce(
-                Subquery(rotacion_compras_subquery),
-                0
-                ),
-                rotacion_x_ventas=Coalesce(
-                    Subquery(rotacion_ventas_subquery),
-                    0
-                ),
-                    existencia=Coalesce(
+                existencia=Coalesce(
                     F('ingreso_producto__producto__stock_inicial'),  # Campo de modelo relacionado
                     Value(0),  # Valor predeterminado en caso de que sea nulo
                     output_field=IntegerField()  # Especifica el tipo de campo
@@ -288,12 +280,11 @@ def rotacion_productos_x_compras(fecha_inicio,fecha_fin):
                 ultima_venta=Subquery(ultima_venta_subquery),
                 cliente=Subquery(cliente_subquery),  # Reemplaza con el valor deseado
         ).values(
+                'id',
                 'codigoDeBarra',
                 'nombreymarcaunico',
                 'laboratorio',
                 'tipoDeProducto',
-                'rotacion_compras',
-                'rotacion_x_ventas',
                 'existencia',
                 'num_lotes',
                 'ultima_compra',
@@ -302,7 +293,43 @@ def rotacion_productos_x_compras(fecha_inicio,fecha_fin):
                 'cliente',
         ).order_by('nombreymarcaunico')
 
-        return query
+        productos = []
+        for x in query:
+            
+            rotacion_x_ventas = 0
+            rotacion_x_compras = 0
+            
+            query_ventas = CxcMoviDetalle.objects.filter(
+                    producto__id = x['id'],
+                    factura__fecha__range=[fecha_inicio, fecha_fin],
+                    ).exclude(factura__numeracion__tipoDocumento = '9')
+            
+            
+            for i in query_ventas:
+                    rotacion_x_ventas += i.cantidad
+                    
+            query_compras = IngresoDetalle.objects.filter(producto__id = x['id'], ingreso__fecha__range=[fecha_inicio, fecha_fin])
+            for j in query_compras:
+                    rotacion_x_compras += j.cantidad
+                    
+            
+            productos_rotados = dict()
+            productos_rotados['codigoDeBarra'] = x['codigoDeBarra']
+            productos_rotados['nombreymarcaunico'] = x['nombreymarcaunico']
+            productos_rotados['laboratorio'] = x['laboratorio']
+            productos_rotados['tipoDeProducto'] = x['tipoDeProducto']
+            productos_rotados['rotacion_compras'] = rotacion_x_compras
+            productos_rotados['rotacion_x_ventas'] = rotacion_x_ventas
+            productos_rotados['existencia'] = x['existencia']
+            productos_rotados['num_lotes'] = x['num_lotes']
+            productos_rotados['ultima_compra'] = x['ultima_compra']
+            productos_rotados['proveedor'] = x['proveedor']
+            productos_rotados['ultima_venta'] = x['ultima_venta']
+            productos_rotados['cliente'] = x['cliente']
+
+            productos.append(productos_rotados)
+            
+        return productos
 
 def compras_detalladas(proveedor_id,fecha_inicio,fecha_fin):
     inicio  = datetime.strptime(fecha_inicio, "%Y-%m-%dT%H:%M:%S.%fZ")

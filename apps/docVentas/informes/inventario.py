@@ -74,7 +74,6 @@ def rotacion_productos_x_ventas(fecha_inicio,fecha_fin):
                 'nombreymarcaunico',
                 'laboratorio',
                 'tipoDeProducto',
-               
                 'existencia',
                 'num_lotes',
                 'ultima_compra',
@@ -93,6 +92,8 @@ def rotacion_productos_x_ventas(fecha_inicio,fecha_fin):
                         producto__id = x['id'],
                         factura__fecha__range=[fecha_inicio, fecha_fin],
                         ).exclude(factura__numeracion__tipoDocumento = '9')
+                
+                
                 for i in query_ventas:
                         rotacion_x_ventas += i.cantidad
                         

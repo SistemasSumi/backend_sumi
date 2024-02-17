@@ -1045,7 +1045,7 @@ def crearTicketPDF(cxc:CxcMovi):
   
     for x in detalle:
         pdf.set_font('Arial', '', 9)
-        pdf.multi_cell(0, 4, str(x.producto.nombreymarcaunico + ' ' + x.lote), 0, 'L', False)
+        pdf.multi_cell(0, 4, str(x.producto.nombreymarcaunico + ' ' + x.lote + 'F.V:' + str(x.vence)), 0, 'L', False)
         pdf.set_font('Arial', 'B', 9)
         if x.iva > 0:
             pdf.cell(7, 4, str("19%"), 0, 0, 'L')
@@ -2512,7 +2512,8 @@ def Contabilizar_NotaCredito(nota:NotaCreditoVentas):
                 linea2 = asientoDetalle()
                 linea2.asiento  = movi
                 linea2.tercero  = cxc.cliente
-                linea2.cuenta   = tiposDeMercancia[j].tipoDeProducto.c_ingreso
+                # asignada la cuenta de devolucion 4175 para las nota credito ventas
+                linea2.cuenta   = tiposDeMercancia[j].tipoDeProducto.c.dev
                 linea2.tipo     = 'NOC'
                 linea2.debito   = tiposDeMercancia[j].valor
                 listaDetalleCompraAsiento.append(linea2)
